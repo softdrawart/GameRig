@@ -40,10 +40,8 @@ class Rig(BaseLimbRig, leg):
             self.set_bone_parent(self.bones.ctrl.heel, self.ik_toe_spin)
 
     @stage.generate_widgets
-    def make_ik_spin_control_widget(self):
+    def make_ik_toe_spin_control_widget(self):
         obj = create_ball_socket_widget(self.obj, self.ik_toe_spin, size=0.75)
-        #rot_fix = Matrix.Rotation(math.pi/2, 4, self.main_axis.upper())
-        #adjust_widget_transform_mesh(obj, rot_fix, local=True)
 def create_sample(obj):
     bones = orig_create_sample(obj)
 
