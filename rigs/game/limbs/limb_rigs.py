@@ -70,6 +70,29 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
                 self.make_constraint(deform, 'COPY_LOCATION', entry.org)
                 self.make_constraint(deform, 'COPY_ROTATION', entry.org)
 
+    def rig_ik_mch_end_bone(self, mch_ik: str, mch_target: str, ctrl_pole: str, chain=2):
+        if not self.enable_scale:
+            con = self.make_constraint(
+                mch_ik, 'IK', mch_target, chain_count=chain,
+            )
+
+            con.use_stretch = False
+
+            self.make_driver(con, "mute",
+                            variables=[(self.prop_bone, 'pole_vector')], polynomial=[0.0, 1.0])
+
+            con_pole = self.make_constraint(
+                mch_ik, 'IK', mch_target, chain_count=chain,
+                pole_target=self.obj, pole_subtarget=ctrl_pole, pole_angle=self.pole_angle,
+            )
+
+            con_pole.use_stretch = False
+
+            self.make_driver(con_pole, "mute",
+                            variables=[(self.prop_bone, 'pole_vector')], polynomial=[1.0, -1.0])
+        else:
+            super().rig_ik_mch_end_bone(mch_ik, mch_target, ctrl_pole)
+
     @stage.configure_bones
     def set_control_orientations(self):
         self.remove_quat_rot_mode(self.bones.ctrl)
