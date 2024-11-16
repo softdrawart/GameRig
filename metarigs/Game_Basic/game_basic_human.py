@@ -91,18 +91,19 @@ def create(obj):  # noqa
 
     bones = {}
 
-    bone = arm.edit_bones.new('spine')
-    bone.head = 0.0000, 0.0552, 1.0099
-    bone.tail = 0.0000, 0.0172, 1.1573
-    bone.roll = 0.0000
-    bone.use_connect = False
-    bones['spine'] = bone.name
     bone = arm.edit_bones.new('char_root')
     bone.head = 0.0000, 0.0000, 0.0000
     bone.tail = 0.0000, 0.2500, 0.0000
     bone.roll = 0.0000
     bone.use_connect = False
     bones['char_root'] = bone.name
+    bone = arm.edit_bones.new('spine')
+    bone.head = 0.0000, 0.0552, 1.0099
+    bone.tail = 0.0000, 0.0172, 1.1573
+    bone.roll = 0.0000
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['char_root']]
+    bones['spine'] = bone.name
     bone = arm.edit_bones.new('spine.001')
     bone.head = 0.0000, 0.0172, 1.1573
     bone.tail = 0.0000, 0.0004, 1.2929
@@ -287,16 +288,6 @@ def create(obj):  # noqa
     bones['hand.R'] = bone.name
 
     bpy.ops.object.mode_set(mode='OBJECT')
-    pbone = obj.pose.bones[bones['spine']]
-    pbone.rigify_type = 'game.spines.basic_spine'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    assign_bone_collection_refs(pbone.rigify_parameters, 'tweak', 'Torso (Tweak)')
-    assign_bone_collection_refs(pbone.rigify_parameters, 'fk', 'Torso (Tweak)')
     pbone = obj.pose.bones[bones['char_root']]
     pbone.rigify_type = 'game.basic.super_copy'
     pbone.lock_location = (False, False, False)
@@ -313,6 +304,16 @@ def create(obj):  # noqa
         pbone.rigify_parameters.make_control = False
     except AttributeError:
         pass
+    pbone = obj.pose.bones[bones['spine']]
+    pbone.rigify_type = 'game.spines.basic_spine'
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Torso')
+    assign_bone_collection_refs(pbone.rigify_parameters, 'tweak', 'Torso (Tweak)')
+    assign_bone_collection_refs(pbone.rigify_parameters, 'fk', 'Torso (Tweak)')
     pbone = obj.pose.bones[bones['spine.001']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)

@@ -102,6 +102,7 @@ def create(obj):  # noqa
     bone.tail = 0.0000, 0.0172, 1.1573
     bone.roll = 0.0000
     bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['char_root']]
     bones['spine'] = bone.name
     bone = arm.edit_bones.new('spine.001')
     bone.head = 0.0000, 0.0172, 1.1573
