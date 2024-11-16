@@ -19,7 +19,7 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
     @stage.parent_bones
     def parent_deform_chain(self):
         self.set_bone_parent(self.bones.deform[0], self.rig_parent_bone)
-        self.parent_bone_chain(self.bones.deform, use_connect=False)
+        self.parent_bone_chain(self.bones.deform, use_connect=True)
 
         # This puts the deformation bones into the def hierarchy of its parent rig
         self.clean_def_hierarchy(self.bones.deform[0])
