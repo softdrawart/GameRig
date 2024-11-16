@@ -9,9 +9,9 @@ from . utils import space_switch
 
 rigify_info = {
     'name': "GameRig",
-    'author': "Armin Halac",
+    'author': "Armin Halac, (edited by) Mikhail Lebedev",
     'version': (1, 0, 0),
-    'blender': (3, 5, 1),
+    'blender': (4, 0, 0),
     'description': "Feature set made for game rigs",
     'doc_url': "https://github.com/Arminando/GameRig#readme",
     'link': "https://github.com/Arminando/GameRig",

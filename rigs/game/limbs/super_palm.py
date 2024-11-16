@@ -62,7 +62,7 @@ class Rig(BoneUtilityMixin, old_super_palm):
         super().add_parameters(params)
         params.enable_scale = bpy.props.BoolProperty(
             name="Scale",
-            default=False,
+            default=True,
             description="Deformation bones will inherit the scale of their ORG bones. Enable this only if you know what you are doing because scale can break your rig in the game engine"
         )
 
