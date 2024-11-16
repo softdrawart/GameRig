@@ -46,11 +46,11 @@ def create(obj):  # noqa
 
     bone_collections = {}
 
-    for bcoll in list(arm.collections):
+    for bcoll in list(arm.collections_all):
         arm.collections.remove(bcoll)
 
-    def add_bone_collection(name, *, ui_row=0, ui_title='', sel_set=False, color_set_id=0):
-        new_bcoll = arm.collections.new(name)
+    def add_bone_collection(name, *, parent=None, ui_row=0, ui_title='', sel_set=False, color_set_id=0):
+        new_bcoll = arm.collections.new(name, parent=bone_collections.get(parent))
         new_bcoll.rigify_ui_row = ui_row
         new_bcoll.rigify_ui_title = ui_title
         new_bcoll.rigify_sel_set = sel_set
@@ -83,6 +83,11 @@ def create(obj):  # noqa
     add_bone_collection('Leg.R (FK)', ui_row=9, ui_title='(FK)', color_set_id=5)
     add_bone_collection('Leg.R (Tweak)', ui_row=10, ui_title='(Tweak)', color_set_id=4)
     add_bone_collection('Root', ui_row=13, color_set_id=1)
+    add_bone_collection('Face', ui_row=1, color_set_id=5)
+    add_bone_collection('Face (Primary)', ui_row=2, ui_title='(Primary)', color_set_id=2)
+    add_bone_collection('Face (Secondary)', ui_row=2, ui_title='(Secondary)', color_set_id=3)
+    add_bone_collection('Fingers', ui_row=7, color_set_id=6)
+    add_bone_collection('Fingers (Detail)', ui_row=8, ui_title='(Detail)', color_set_id=5)
 
     bones = {}
 
@@ -92,6 +97,12 @@ def create(obj):  # noqa
     bone.roll = 0.0000
     bone.use_connect = False
     bones['spine'] = bone.name
+    bone = arm.edit_bones.new('char_root')
+    bone.head = 0.0000, 0.0000, 0.0000
+    bone.tail = 0.0000, 0.2500, 0.0000
+    bone.roll = 0.0000
+    bone.use_connect = False
+    bones['char_root'] = bone.name
     bone = arm.edit_bones.new('spine.001')
     bone.head = 0.0000, 0.0172, 1.1573
     bone.tail = 0.0000, 0.0004, 1.2929
@@ -183,13 +194,13 @@ def create(obj):  # noqa
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['foot.L']]
     bones['toe.L'] = bone.name
-    bone = arm.edit_bones.new('heel.02.L')
+    bone = arm.edit_bones.new('heel.L')
     bone.head = 0.0600, 0.0459, 0.0000
     bone.tail = 0.1400, 0.0459, 0.0000
     bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['foot.L']]
-    bones['heel.02.L'] = bone.name
+    bones['heel.L'] = bone.name
     bone = arm.edit_bones.new('toe.R')
     bone.head = -0.0980, -0.0934, 0.0167
     bone.tail = -0.0980, -0.1606, 0.0167
@@ -197,13 +208,13 @@ def create(obj):  # noqa
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['foot.R']]
     bones['toe.R'] = bone.name
-    bone = arm.edit_bones.new('heel.02.R')
+    bone = arm.edit_bones.new('heel.R')
     bone.head = -0.0600, 0.0459, 0.0000
     bone.tail = -0.1400, 0.0459, 0.0000
     bone.roll = -0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['foot.R']]
-    bones['heel.02.R'] = bone.name
+    bones['heel.R'] = bone.name
     bone = arm.edit_bones.new('spine.005')
     bone.head = 0.0000, -0.0130, 1.7197
     bone.tail = 0.0000, -0.0247, 1.7813
@@ -225,6 +236,20 @@ def create(obj):  # noqa
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['shoulder.R']]
     bones['upper_arm.R'] = bone.name
+    bone = arm.edit_bones.new('toe_roll.L')
+    bone.head = 0.0980, -0.1880, -0.0020
+    bone.tail = 0.0980, -0.1895, 0.0652
+    bone.roll = -3.1416
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['toe.L']]
+    bones['toe_roll.L'] = bone.name
+    bone = arm.edit_bones.new('toe_roll.R')
+    bone.head = -0.0980, -0.1880, -0.0020
+    bone.tail = -0.0980, -0.1895, 0.0652
+    bone.roll = 3.1416
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['toe.R']]
+    bones['toe_roll.R'] = bone.name
     bone = arm.edit_bones.new('spine.006')
     bone.head = 0.0000, -0.0247, 1.7813
     bone.tail = 0.0000, -0.0247, 1.9796
@@ -272,6 +297,22 @@ def create(obj):  # noqa
     assign_bone_collections(pbone, 'Torso')
     assign_bone_collection_refs(pbone.rigify_parameters, 'tweak', 'Torso (Tweak)')
     assign_bone_collection_refs(pbone.rigify_parameters, 'fk', 'Torso (Tweak)')
+    pbone = obj.pose.bones[bones['char_root']]
+    pbone.rigify_type = 'game.basic.super_copy'
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Torso')
+    try:
+        pbone.rigify_parameters.super_copy_widget_type = 'diamond'
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.make_control = False
+    except AttributeError:
+        pass
     pbone = obj.pose.bones[bones['spine.001']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
@@ -425,7 +466,7 @@ def create(obj):  # noqa
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Leg.L (IK)')
-    pbone = obj.pose.bones[bones['heel.02.L']]
+    pbone = obj.pose.bones[bones['heel.L']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
@@ -441,7 +482,7 @@ def create(obj):  # noqa
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Leg.R (IK)')
-    pbone = obj.pose.bones[bones['heel.02.R']]
+    pbone = obj.pose.bones[bones['heel.R']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
@@ -485,6 +526,22 @@ def create(obj):  # noqa
         pass
     assign_bone_collection_refs(pbone.rigify_parameters, 'tweak', 'Arm.R (Tweak)')
     assign_bone_collection_refs(pbone.rigify_parameters, 'fk', 'Arm.R (FK)')
+    pbone = obj.pose.bones[bones['toe_roll.L']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Leg.L (IK)')
+    pbone = obj.pose.bones[bones['toe_roll.R']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Leg.L (IK)')
     pbone = obj.pose.bones[bones['spine.006']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)

@@ -16,41 +16,41 @@ def create(obj):  # noqa
     arm.rigify_colors[0].name = "Root"
     arm.rigify_colors[0].active = Color((0.5490, 1.0000, 1.0000))
     arm.rigify_colors[0].normal = Color((0.4353, 0.1843, 0.4157))
-    arm.rigify_colors[0].select = Color((0.3137, 0.7843, 1.0000))
+    arm.rigify_colors[0].select = Color((0.3140, 0.7840, 1.0000))
     arm.rigify_colors[0].standard_colors_lock = True
     arm.rigify_colors[1].name = "IK"
     arm.rigify_colors[1].active = Color((0.5490, 1.0000, 1.0000))
     arm.rigify_colors[1].normal = Color((0.6039, 0.0000, 0.0000))
-    arm.rigify_colors[1].select = Color((0.3137, 0.7843, 1.0000))
+    arm.rigify_colors[1].select = Color((0.3140, 0.7840, 1.0000))
     arm.rigify_colors[1].standard_colors_lock = True
     arm.rigify_colors[2].name = "Special"
     arm.rigify_colors[2].active = Color((0.5490, 1.0000, 1.0000))
     arm.rigify_colors[2].normal = Color((0.9569, 0.7882, 0.0471))
-    arm.rigify_colors[2].select = Color((0.3137, 0.7843, 1.0000))
+    arm.rigify_colors[2].select = Color((0.3140, 0.7840, 1.0000))
     arm.rigify_colors[2].standard_colors_lock = True
     arm.rigify_colors[3].name = "Tweak"
     arm.rigify_colors[3].active = Color((0.5490, 1.0000, 1.0000))
     arm.rigify_colors[3].normal = Color((0.0392, 0.2118, 0.5804))
-    arm.rigify_colors[3].select = Color((0.3137, 0.7843, 1.0000))
+    arm.rigify_colors[3].select = Color((0.3140, 0.7840, 1.0000))
     arm.rigify_colors[3].standard_colors_lock = True
     arm.rigify_colors[4].name = "FK"
     arm.rigify_colors[4].active = Color((0.5490, 1.0000, 1.0000))
     arm.rigify_colors[4].normal = Color((0.1176, 0.5686, 0.0353))
-    arm.rigify_colors[4].select = Color((0.3137, 0.7843, 1.0000))
+    arm.rigify_colors[4].select = Color((0.3140, 0.7840, 1.0000))
     arm.rigify_colors[4].standard_colors_lock = True
     arm.rigify_colors[5].name = "Extra"
     arm.rigify_colors[5].active = Color((0.5490, 1.0000, 1.0000))
     arm.rigify_colors[5].normal = Color((0.9686, 0.2510, 0.0941))
-    arm.rigify_colors[5].select = Color((0.3137, 0.7843, 1.0000))
+    arm.rigify_colors[5].select = Color((0.3140, 0.7840, 1.0000))
     arm.rigify_colors[5].standard_colors_lock = True
 
     bone_collections = {}
 
-    for bcoll in list(arm.collections):
+    for bcoll in list(arm.collections_all):
         arm.collections.remove(bcoll)
 
-    def add_bone_collection(name, *, ui_row=0, ui_title='', sel_set=False, color_set_id=0):
-        new_bcoll = arm.collections.new(name)
+    def add_bone_collection(name, *, parent=None, ui_row=0, ui_title='', sel_set=False, color_set_id=0):
+        new_bcoll = arm.collections.new(name, parent=bone_collections.get(parent))
         new_bcoll.rigify_ui_row = ui_row
         new_bcoll.rigify_ui_title = ui_title
         new_bcoll.rigify_sel_set = sel_set
@@ -68,29 +68,35 @@ def create(obj):  # noqa
             for name in coll_names:
                 ref_list.add().set_collection(bone_collections[name])
 
+    add_bone_collection('Torso', ui_row=1, color_set_id=3)
+    add_bone_collection('Torso (Tweak)', ui_row=2, ui_title='(Tweak)', color_set_id=4)
+    add_bone_collection('Arm.L (IK)', ui_row=4, color_set_id=2)
+    add_bone_collection('Arm.L (FK)', ui_row=5, ui_title='(FK)', color_set_id=5)
+    add_bone_collection('Arm.L (Tweak)', ui_row=6, ui_title='(Tweak)', color_set_id=4)
+    add_bone_collection('Arm.R (IK)', ui_row=4, color_set_id=2)
+    add_bone_collection('Arm.R (FK)', ui_row=5, ui_title='(FK)', color_set_id=5)
+    add_bone_collection('Arm.R (Tweak)', ui_row=6, ui_title='(Tweak)', color_set_id=4)
+    add_bone_collection('Leg.L (IK)', ui_row=8, color_set_id=2)
+    add_bone_collection('Leg.L (FK)', ui_row=9, ui_title='(FK)', color_set_id=5)
+    add_bone_collection('Leg.L (Tweak)', ui_row=10, ui_title='(Tweak)', color_set_id=4)
+    add_bone_collection('Leg.R (IK)', ui_row=8, color_set_id=2)
+    add_bone_collection('Leg.R (FK)', ui_row=9, ui_title='(FK)', color_set_id=5)
+    add_bone_collection('Leg.R (Tweak)', ui_row=10, ui_title='(Tweak)', color_set_id=4)
+    add_bone_collection('Root', ui_row=13, color_set_id=1)
     add_bone_collection('Face', ui_row=1, color_set_id=5)
     add_bone_collection('Face (Primary)', ui_row=2, ui_title='(Primary)', color_set_id=2)
     add_bone_collection('Face (Secondary)', ui_row=2, ui_title='(Secondary)', color_set_id=3)
-    add_bone_collection('Torso', ui_row=4, color_set_id=3)
-    add_bone_collection('Torso (Tweak)', ui_row=5, ui_title='(Tweak)', color_set_id=4)
     add_bone_collection('Fingers', ui_row=7, color_set_id=6)
     add_bone_collection('Fingers (Detail)', ui_row=8, ui_title='(Detail)', color_set_id=5)
-    add_bone_collection('Arm.L (IK)', ui_row=10, color_set_id=2)
-    add_bone_collection('Arm.L (FK)', ui_row=11, ui_title='(FK)', color_set_id=5)
-    add_bone_collection('Arm.L (Tweak)', ui_row=12, ui_title='(Tweak)', color_set_id=4)
-    add_bone_collection('Arm.R (IK)', ui_row=10, color_set_id=2)
-    add_bone_collection('Arm.R (FK)', ui_row=11, ui_title='(FK)', color_set_id=5)
-    add_bone_collection('Arm.R (Tweak)', ui_row=12, ui_title='(Tweak)', color_set_id=4)
-    add_bone_collection('Leg.L (IK)', ui_row=14, color_set_id=2)
-    add_bone_collection('Leg.L (FK)', ui_row=15, ui_title='(FK)', color_set_id=5)
-    add_bone_collection('Leg.L (Tweak)', ui_row=16, ui_title='(Tweak)', color_set_id=4)
-    add_bone_collection('Leg.R (IK)', ui_row=14, color_set_id=2)
-    add_bone_collection('Leg.R (FK)', ui_row=15, ui_title='(FK)', color_set_id=5)
-    add_bone_collection('Leg.R (Tweak)', ui_row=16, ui_title='(Tweak)', color_set_id=4)
-    add_bone_collection('Root', ui_row=19, color_set_id=1)
 
     bones = {}
 
+    bone = arm.edit_bones.new('char_root')
+    bone.head = 0.0000, 0.0000, 0.0000
+    bone.tail = -0.0000, 0.2500, 0.0000
+    bone.roll = 0.0000
+    bone.use_connect = False
+    bones['char_root'] = bone.name
     bone = arm.edit_bones.new('spine')
     bone.head = 0.0000, 0.0552, 1.0099
     bone.tail = 0.0000, 0.0172, 1.1573
@@ -188,13 +194,13 @@ def create(obj):  # noqa
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['foot.L']]
     bones['toe.L'] = bone.name
-    bone = arm.edit_bones.new('heel.02.L')
+    bone = arm.edit_bones.new('heel.L')
     bone.head = 0.0600, 0.0459, 0.0000
     bone.tail = 0.1400, 0.0459, 0.0000
     bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['foot.L']]
-    bones['heel.02.L'] = bone.name
+    bones['heel.L'] = bone.name
     bone = arm.edit_bones.new('toe.R')
     bone.head = -0.0980, -0.0934, 0.0167
     bone.tail = -0.0980, -0.1606, 0.0167
@@ -202,13 +208,13 @@ def create(obj):  # noqa
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['foot.R']]
     bones['toe.R'] = bone.name
-    bone = arm.edit_bones.new('heel.02.R')
+    bone = arm.edit_bones.new('heel.R')
     bone.head = -0.0600, 0.0459, 0.0000
     bone.tail = -0.1400, 0.0459, 0.0000
     bone.roll = -0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['foot.R']]
-    bones['heel.02.R'] = bone.name
+    bones['heel.R'] = bone.name
     bone = arm.edit_bones.new('spine.005')
     bone.head = 0.0000, -0.0130, 1.7197
     bone.tail = 0.0000, -0.0247, 1.7813
@@ -230,6 +236,20 @@ def create(obj):  # noqa
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['shoulder.R']]
     bones['upper_arm.R'] = bone.name
+    bone = arm.edit_bones.new('toe_roll.L')
+    bone.head = 0.0980, -0.1880, -0.0020
+    bone.tail = 0.0980, -0.1895, 0.0652
+    bone.roll = -3.1416
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['toe.L']]
+    bones['toe_roll.L'] = bone.name
+    bone = arm.edit_bones.new('toe_roll.R')
+    bone.head = -0.0980, -0.1880, -0.0020
+    bone.tail = -0.0980, -0.1895, 0.0652
+    bone.roll = 3.1416
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['toe.R']]
+    bones['toe_roll.R'] = bone.name
     bone = arm.edit_bones.new('spine.006')
     bone.head = 0.0000, -0.0247, 1.7813
     bone.tail = 0.0000, -0.0247, 1.9796
@@ -547,14 +567,14 @@ def create(obj):  # noqa
     bones['nose_glue.R.001'] = bone.name
     bone = arm.edit_bones.new('nose_glue.004')
     bone.head = 0.0000, -0.1706, 1.8393
-    bone.tail = -0.0000, -0.1710, 1.8140
+    bone.tail = 0.0000, -0.1710, 1.8140
     bone.roll = 0.7854
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['face']]
     bones['nose_glue.004'] = bone.name
     bone = arm.edit_bones.new('nose_end_glue.004')
     bone.head = 0.0000, -0.1698, 1.8244
-    bone.tail = -0.0000, -0.1710, 1.8140
+    bone.tail = 0.0000, -0.1710, 1.8140
     bone.roll = 0.7854
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['face']]
@@ -735,14 +755,14 @@ def create(obj):  # noqa
     bone.parent = arm.edit_bones[bones['cheek.T.R']]
     bones['cheek.T.R.001'] = bone.name
     bone = arm.edit_bones.new('lip.T.L')
-    bone.head = -0.0000, -0.1710, 1.8140
+    bone.head = 0.0000, -0.1710, 1.8140
     bone.tail = 0.0195, -0.1656, 1.8146
-    bone.roll = 0.0000
+    bone.roll = -0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['jaw_master']]
     bones['lip.T.L'] = bone.name
     bone = arm.edit_bones.new('lip.B.L')
-    bone.head = -0.0000, -0.1667, 1.7978
+    bone.head = 0.0000, -0.1667, 1.7978
     bone.tail = 0.0185, -0.1585, 1.8028
     bone.roll = -0.0789
     bone.use_connect = False
@@ -765,7 +785,7 @@ def create(obj):  # noqa
     bone = arm.edit_bones.new('lip.T.R')
     bone.head = 0.0000, -0.1710, 1.8140
     bone.tail = -0.0195, -0.1656, 1.8146
-    bone.roll = -0.0000
+    bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['jaw_master']]
     bones['lip.T.R'] = bone.name
@@ -798,15 +818,15 @@ def create(obj):  # noqa
     bone.parent = arm.edit_bones[bones['jaw_master']]
     bones['teeth.B'] = bone.name
     bone = arm.edit_bones.new('tongue')
-    bone.head = -0.0000, -0.0518, 1.7946
-    bone.tail = -0.0000, -0.0771, 1.8002
+    bone.head = 0.0000, -0.0518, 1.7946
+    bone.tail = 0.0000, -0.0771, 1.8002
     bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['jaw_master']]
     bones['tongue'] = bone.name
     bone = arm.edit_bones.new('chin_end_glue.001')
     bone.head = 0.0000, -0.1599, 1.7909
-    bone.tail = -0.0000, -0.1667, 1.7978
+    bone.tail = 0.0000, -0.1667, 1.7978
     bone.roll = 0.7854
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['jaw_master']]
@@ -827,7 +847,7 @@ def create(obj):  # noqa
     bones['nose.L.001'] = bone.name
     bone = arm.edit_bones.new('nose.R.001')
     bone.head = -0.0176, -0.1627, 1.8429
-    bone.tail = -0.0000, -0.1965, 1.8450
+    bone.tail = 0.0000, -0.1965, 1.8450
     bone.roll = -0.1070
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['nose_master']]
@@ -1022,7 +1042,7 @@ def create(obj):  # noqa
     bone.parent = arm.edit_bones[bones['jaw.R']]
     bones['jaw.R.001'] = bone.name
     bone = arm.edit_bones.new('tongue.001')
-    bone.head = -0.0000, -0.0771, 1.8002
+    bone.head = 0.0000, -0.0771, 1.8002
     bone.tail = 0.0000, -0.1111, 1.7949
     bone.roll = -0.0000
     bone.use_connect = True
@@ -1268,6 +1288,22 @@ def create(obj):  # noqa
     bones['lid.B.R.003'] = bone.name
 
     bpy.ops.object.mode_set(mode='OBJECT')
+    pbone = obj.pose.bones[bones['char_root']]
+    pbone.rigify_type = 'game.basic.super_copy'
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Torso')
+    try:
+        pbone.rigify_parameters.super_copy_widget_type = 'diamond'
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.make_control = False
+    except AttributeError:
+        pass
     pbone = obj.pose.bones[bones['spine']]
     pbone.rigify_type = 'game.spines.basic_spine'
     pbone.lock_location = (False, False, False)
@@ -1431,7 +1467,7 @@ def create(obj):  # noqa
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Leg.L (IK)')
-    pbone = obj.pose.bones[bones['heel.02.L']]
+    pbone = obj.pose.bones[bones['heel.L']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
@@ -1447,7 +1483,7 @@ def create(obj):  # noqa
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Leg.R (IK)')
-    pbone = obj.pose.bones[bones['heel.02.R']]
+    pbone = obj.pose.bones[bones['heel.R']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
@@ -1491,6 +1527,22 @@ def create(obj):  # noqa
         pass
     assign_bone_collection_refs(pbone.rigify_parameters, 'tweak', 'Arm.R (Tweak)')
     assign_bone_collection_refs(pbone.rigify_parameters, 'fk', 'Arm.R (FK)')
+    pbone = obj.pose.bones[bones['toe_roll.L']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Leg.L (IK)')
+    pbone = obj.pose.bones[bones['toe_roll.R']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Leg.L (IK)')
     pbone = obj.pose.bones[bones['spine.006']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)

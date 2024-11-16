@@ -24,6 +24,9 @@ class Rig(BaseLimbRig, leg):
         for b in self.get_bone(bones.main[3]).bone.children:
             if not b.use_connect and not b.children and not is_rig_base_bone(self.obj, b.name):
                 self.org_ik_toe_spin = b.name
+                break
+            else:
+                self.raise_error("Toe Roll bone not found.")
 
         return bones
 
