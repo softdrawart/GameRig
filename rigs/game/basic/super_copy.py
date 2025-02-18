@@ -65,7 +65,7 @@ class Rig(BoneUtilityMixin, super_copy):
     def configure_bones(self):
         if self.bones.ctrl:
             controls = {'ctrl': [self.bones.ctrl]}
-            self.remove_quat_rot_mode(controls)
+            #self.remove_quat_rot_mode(controls)
         
 
 

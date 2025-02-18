@@ -95,7 +95,8 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
 
     @stage.configure_bones
     def set_control_orientations(self):
-        self.remove_quat_rot_mode(self.bones.ctrl)
+        pass
+        #self.remove_quat_rot_mode(self.bones.ctrl)
 
     
     # def rig_tweak_mch_bone(self, i: int, tweak: str, entry: SegmentEntry):

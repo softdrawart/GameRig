@@ -32,7 +32,7 @@ class Rig(BoneUtilityMixin, old_super_face, MechanismUtilityMixin):
                 all_ctrls.append( bone )
 
         controls_string = ", ".join(["'" + x + "'" for x in all_ctrls])
-        self.remove_quat_rot_mode({'ctrls': all_ctrls})
+        #self.remove_quat_rot_mode({'ctrls': all_ctrls})
 
         return [ script % (
             controls_string,

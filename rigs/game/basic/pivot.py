@@ -56,7 +56,7 @@ class Rig(BoneUtilityMixin, pivot):
 
     def configure_bones(self):
         super().configure_bones()
-        self.remove_quat_rot_mode(self.bones.ctrl)
+        #self.remove_quat_rot_mode(self.bones.ctrl)
 
 
 
