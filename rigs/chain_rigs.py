@@ -39,7 +39,8 @@ class SimpleChainRig(BoneUtilityMixin, old_SimpleChainRig):
 
     @stage.configure_bones
     def set_control_orientations(self):
-        self.remove_quat_rot_mode(self.bones.ctrl)
+        pass
+        #self.remove_quat_rot_mode(self.bones.ctrl)
     
 
 class TweakChainRig(SimpleChainRig, old_TweakChainRig):
