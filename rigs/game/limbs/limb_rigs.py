@@ -13,7 +13,6 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
     def initialize(self):
         super().initialize()
         self.bbone_segments = 1
-        self.enable_scale = self.params.enable_scale
         self.leaf_hierarchy = self.params.leaf_hierarchy
 
 
@@ -43,59 +42,23 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
                             self.set_bone_parent(bone, segment)
 
     def rig_deform_bone(self, i, deform, entry, next_entry, tweak, next_tweak):
-        if self.enable_scale:
-            if tweak:
-                self.make_constraint(deform, 'COPY_TRANSFORMS', tweak)
+        if tweak:
+            self.make_constraint(deform, 'COPY_LOCATION', tweak)
+            self.make_constraint(deform, 'COPY_ROTATION', tweak)
 
-                if next_tweak:
-                    self.make_constraint(deform, 'STRETCH_TO', next_tweak, keep_axis='SWING_Y')
+            if next_tweak:
+                self.make_constraint(deform, 'DAMPED_TRACK', next_tweak)
 
-                    # self.rig_deform_easing(i, deform, tweak, next_tweak) #bbone stuff, not relevant here.
+                # self.rig_deform_easing(i, deform, tweak, next_tweak) #bbone stuff, not relevant here.
 
-                elif next_entry:
-                    self.make_constraint(deform, 'STRETCH_TO', next_entry.org, keep_axis='SWING_Y')
+            elif next_entry:
+                self.make_constraint(deform, 'DAMPED_TRACK', next_entry.org)
 
-            else:
-                self.make_constraint(deform, 'COPY_TRANSFORMS', entry.org)
         else:
-            if tweak:
-                self.make_constraint(deform, 'COPY_LOCATION', tweak)
-                self.make_constraint(deform, 'COPY_ROTATION', tweak)
-
-                if next_tweak:
-                    self.make_constraint(deform, 'DAMPED_TRACK', next_tweak)
-
-                    # self.rig_deform_easing(i, deform, tweak, next_tweak) #bbone stuff, not relevant here.
-
-                elif next_entry:
-                    self.make_constraint(deform, 'DAMPED_TRACK', next_entry.org)
-
-            else:
-                self.make_constraint(deform, 'COPY_LOCATION', entry.org)
-                self.make_constraint(deform, 'COPY_ROTATION', entry.org)
+            self.make_constraint(deform, 'COPY_LOCATION', entry.org)
+            self.make_constraint(deform, 'COPY_ROTATION', entry.org)
 
     def rig_ik_mch_end_bone(self, mch_ik: str, mch_target: str, ctrl_pole: str, chain=2):
-        """ if not self.enable_scale:
-            con = self.make_constraint(
-                mch_ik, 'IK', mch_target, chain_count=chain,
-            )
-
-            #con.use_stretch = False
-
-            self.make_driver(con, "mute",
-                            variables=[(self.prop_bone, 'pole_vector')], polynomial=[0.0, 1.0])
-
-            con_pole = self.make_constraint(
-                mch_ik, 'IK', mch_target, chain_count=chain,
-                pole_target=self.obj, pole_subtarget=ctrl_pole, pole_angle=self.pole_angle,
-            )
-
-            #con_pole.use_stretch = False
-
-            self.make_driver(con_pole, "mute",
-                            variables=[(self.prop_bone, 'pole_vector')], polynomial=[1.0, -1.0])
-        else:
-            super().rig_ik_mch_end_bone(mch_ik, mch_target, ctrl_pole) """
         con = self.make_constraint(
             mch_ik, 'IK', mch_target, chain_count=chain,
         )
@@ -122,7 +85,6 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
 
     
     def rig_tweak_mch_bone(self, i: int, tweak: str, entry: SegmentEntry):
-        print('hello')
         super().rig_tweak_mch_bone(i, tweak, entry) #call existing super function
         #then add copy rotation constraint
         if i == 0:
@@ -158,11 +120,6 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
             RigifyParameters PropertyGroup
         """
         super().add_parameters(params)
-        params.enable_scale = bpy.props.BoolProperty(
-            name="Scale",
-            default=True,
-            description="Deformation bones will inherit the scale of their ORG bones. Enable this only if you know what you are doing because scale can break your rig in the game engine"
-        )
         params.leaf_hierarchy = bpy.props.BoolProperty(
             name="Leaf Hierarchy",
             default=False,
@@ -176,5 +133,4 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
         super().parameters_ui(layout, params)
 
         c = layout.column()
-        c.prop(params, "enable_scale")
         c.prop(params, "leaf_hierarchy")

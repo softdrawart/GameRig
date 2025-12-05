@@ -46,11 +46,14 @@ class Rig(BaseSpineRig, basic_spine):
             super().parent_tweak_chain()
     
     def rig_mch_control_bones(self):
+        print(self.bones.mch.pivot)
+        print(self.move_pivot)
         if self.move_pivot:
             mch = self.bones.mch
             self.make_constraint(mch.pivot, 'COPY_TRANSFORMS', self.fk_result.hips[-2], influence=0.5)
         else:
-            super().rig_mch_control_bones()
+            mch = self.bones.mch
+            self.make_constraint(mch.pivot, 'COPY_TRANSFORMS', self.fk_result.hips[-1], influence=0)
 
 
 
