@@ -1,9 +1,13 @@
 import bpy
+from math import degrees
 
 from rigify.rigs.basic.super_copy import Rig as super_copy
 from rigify.rigs.basic.super_copy import create_sample as orig_create_sample
 from rigify.utils.naming import strip_org, make_deformer_name
-from rigify.utils.widgets import widget_generator
+from rigify.utils.widgets import create_registered_widget
+from rigify.utils.widgets_basic import create_bone_widget
+
+#from rigify.utils.widgets import widget_generator
 from ....utils.bones import BoneUtilityMixin
 from ....utils.space_switch import gameRig_switch_parents
 
@@ -68,7 +72,22 @@ class Rig(BoneUtilityMixin, super_copy):
             controls = {'ctrl': [self.bones.ctrl]}
             #self.remove_quat_rot_mode(controls)
         
+    def generate_widgets(self):
+        bones = self.bones
 
+        if self.make_control:
+            # Create control widget
+            if self.make_widget:
+                create_registered_widget(self.obj, bones.ctrl,
+                                            self.params.super_copy_widget_type or 'circle')
+                if self.params.super_copy_widget_type == 'shoulder':
+                    pbone = self.get_bone(bones.ctrl)
+                    if pbone.x_axis.z > 0:
+                        pbone.custom_shape_rotation_euler[1] = degrees(-90)
+                    else:
+                        pbone.custom_shape_rotation_euler[1] = degrees(90)
+            else:
+                create_bone_widget(self.obj, bones.ctrl)
 
     @classmethod
     def add_parameters(self, params):
@@ -104,7 +123,7 @@ class Rig(BoneUtilityMixin, super_copy):
         """
         return ["bone"]
 
-@widget_generator(register="shoulder_game")
+""" @widget_generator(register="shoulder_game")
 def create_custom_widget(geom, *, radius=0.5):
     # Typically Rigify widgets treat 'radius' as the visual thickness.
     # We apply it to X and Z, but keep Y (length) constant at 1.0.
@@ -178,7 +197,7 @@ def create_custom_widget(geom, *, radius=0.5):
 	 [32, 31],
 	 [32, 33],
 	 [2, 33]]
-
+ """
 def create_sample(obj):
     """ Create a sample metarig for this rig type.
     """
