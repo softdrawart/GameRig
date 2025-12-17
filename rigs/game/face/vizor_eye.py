@@ -8,7 +8,24 @@ from rigify.base_generate import GeneratorPlugin, BaseGenerator
 from rigify.utils.widgets import create_registered_widget
 from math import degrees, radians
 
+def calculate_alignment_rotation(obj, pb_a, pb_b):
+    """Return result in radians"""
+    if not obj or obj.type != 'ARMATURE':
+        print(f"Error: Armature '{armature_name}' not found.")
+    if not pb_a or not pb_b:
+        print("Error: Could not find one or both bones.")
+        return
 
+    matrix_aligned_local = obj.convert_space(
+        pose_bone=pb_a,
+        matrix=pb_b.matrix,
+        from_space='POSE',
+        to_space='LOCAL'
+    )
+
+    rotation_needed = matrix_aligned_local.to_euler('XYZ')
+    
+    return rotation_needed
 
 class Rig(BaseRig):
 
@@ -113,6 +130,12 @@ class Rig(BaseRig):
             [self.bones.org.eye_lid_top, self.bones.org.eye_lid_bottom]
         )
 
+        angleMin = calculate_alignment_rotation(self.obj, self.get_bone(self.bones.org.eye_lid_top), self.get_bone(self.bones.org.eye_lid_bottom))[0] #isolate X rotation value
+        angleMin = degrees(angleMin)
+        angleMax = 20
+        targetMin = -0.04
+        targetMax = (targetMin * angleMax)/(angleMin) #find max value using linear relationship Ratio Rule
+
         for i, (controller, owner_bone_name) in enumerate(bone_pairs):
             self.make_constraint(
                 owner_bone_name, 
@@ -129,17 +152,17 @@ class Rig(BaseRig):
                 map_from='LOCATION', map_to='ROTATION',
                 map_to_x_from='Z',
                 map_to_z_from='X',
-                from_min_z=-0.04, from_max_z=0.04,  # Input range
-                to_min_x_rot=radians(-50), to_max_x_rot=radians(50) # Output range
+                from_min_z=targetMin, from_max_z=targetMax,  # Input range
+                to_min_x_rot=radians(angleMin), to_max_x_rot=radians(angleMax) # Output range
             )
-            con = self.make_constraint(
+            """ con = self.make_constraint(
                 owner_bone_name, 
                 'LIMIT_ROTATION', 
                 owner_space='LOCAL',
                 use_limit_x=True, min_x=radians(-50.2) if i==0 else radians(-6.2), max_x=radians(6.2) if i==0 else radians(50.2), # Lock Y
             )
             if con and con.use_legacy_behavior:
-                con.use_legacy_behavior=False
+                con.use_legacy_behavior=False """
             #rig Target Bones
             self.make_constraint(
                 controller, 
