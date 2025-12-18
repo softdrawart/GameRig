@@ -106,6 +106,7 @@ class Rig(BaseRig):
 
         #move out and orient lid controllers in the direction
         vec = (pbone.tail - pbone.head).normalized()
+        vec[2] = 0 #exclude z from direction
         axis_idx, axis_val = max(enumerate(vec), key=lambda i: abs(i[1]))
         move_offset = Vector((0, 0, 0))
         sign = 1 if axis_val >= 0 else -1
@@ -144,6 +145,8 @@ class Rig(BaseRig):
                 use_x=True, use_y=False, use_z=False,  # explicit axis locking
                 owner_space='LOCAL', target_space='LOCAL'
             )
+            min =-abs(targetMin) if i==0 else -abs(targetMax)
+            max = abs(targetMax) if i==0 else abs(targetMin)
             self.make_constraint(
                 owner_bone_name, 
                 'TRANSFORM', 
@@ -152,8 +155,8 @@ class Rig(BaseRig):
                 map_from='LOCATION', map_to='ROTATION',
                 map_to_x_from='Z',
                 map_to_z_from='X',
-                from_min_z=targetMin, from_max_z=targetMax,  # Input range
-                to_min_x_rot=radians(angleMin), to_max_x_rot=radians(angleMax) # Output range
+                from_min_z=min, from_max_z=max,  # Input range
+                to_min_x_rot=-abs(radians(angleMin)) if i==0 else -abs(radians(angleMax)), to_max_x_rot=abs(radians(angleMax)) if i==0 else abs(radians(angleMin)) # Output range
             )
             """ con = self.make_constraint(
                 owner_bone_name, 
@@ -167,7 +170,7 @@ class Rig(BaseRig):
             self.make_constraint(
                 controller, 
                 'LIMIT_LOCATION', 
-                min_z=-0.04 if i==0 else 0, max_z=0.005 if i==0 else 0.04,
+                min_z=min, max_z=max,
                 owner_space='LOCAL'
             )
             
