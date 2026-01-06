@@ -1,7 +1,8 @@
 import bpy
 from mathutils import Vector
 from bpy.types import PoseBone
-from rigify.base_rig import BaseRig, stage, BaseRigMixin
+from ....base_rig import base_rig as BaseRig
+from rigify.base_rig import stage, BaseRigMixin
 from rigify.utils.naming import make_derived_name, change_name_side, Side
 from rigify.utils.bones import TypedBoneDict, BaseBoneDict, put_bone, align_bone_roll
 from rigify.base_generate import GeneratorPlugin, BaseGenerator
@@ -89,6 +90,12 @@ class Rig(BaseRig):
         parent = self.parent_bone
         self.set_bone_parent(self.bones.org.eye_lid_top, parent)
         self.set_bone_parent(self.bones.org.eye_lid_bottom, parent)
+
+        
+        self.clean_def_hierarchy(self.bones.org.eye_lid_top)
+        self.clean_def_hierarchy(self.bones.org.eye_lid_bottom)
+        self.clean_def_hierarchy(self.bones.org.eye)
+
     ####################################################
     # eye_lid bones 
     @stage.generate_bones
@@ -215,7 +222,7 @@ class EyeClusterControl(GeneratorPlugin, BaseRigMixin):
                 new_position += self.get_bone(rig.bones.ctrl.target).head
             new_position /= len(self.rig_list) #get avarage position for master control
             target_bone_name = self.rig_list[0].bones.ctrl.target
-            self.master_bone = master_bone_name = self.copy_bone(target_bone_name, make_derived_name(change_name_side(target_bone_name, side=Side.MIDDLE), 'ctrl', suffix='_C'), parent=True)
+            self.master_bone = master_bone_name = self.copy_bone(target_bone_name, make_derived_name(change_name_side(target_bone_name, side=Side.MIDDLE), 'ctrl'), parent=True)
             put_bone(self.obj, master_bone_name, new_position)
     @stage.parent_bones
     def parent_target_bones_to_master(self):
