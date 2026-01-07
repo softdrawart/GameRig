@@ -140,8 +140,8 @@ class Rig(BaseRig):
 
         angleMin = calculate_alignment_rotation(self.obj, self.get_bone(self.bones.org.eye_lid_top), self.get_bone(self.bones.org.eye_lid_bottom))[0] #isolate X rotation value
         angleMin = degrees(angleMin)
-        angleMax = 20
-        targetMin = -0.04
+        angleMax = self.params.angleMax
+        targetMin = self.params.targetMin
         targetMax = (targetMin * angleMax)/(angleMin) #find max value using linear relationship Ratio Rule
 
         for i, (controller, owner_bone_name) in enumerate(bone_pairs):
@@ -154,6 +154,8 @@ class Rig(BaseRig):
             )
             min =-abs(targetMin) if i==0 else -abs(targetMax)
             max = abs(targetMax) if i==0 else abs(targetMin)
+            to_min_x_rot = -abs(radians(angleMin)) if i==0 else -abs(radians(angleMax))
+            to_max_x_rot = abs(radians(angleMax)) if i==0 else abs(radians(angleMin))
             self.make_constraint(
                 owner_bone_name, 
                 'TRANSFORM', 
@@ -163,16 +165,16 @@ class Rig(BaseRig):
                 map_to_x_from='Z',
                 map_to_z_from='X',
                 from_min_z=min, from_max_z=max,  # Input range
-                to_min_x_rot=-abs(radians(angleMin)) if i==0 else -abs(radians(angleMax)), to_max_x_rot=abs(radians(angleMax)) if i==0 else abs(radians(angleMin)) # Output range
+                to_min_x_rot=to_min_x_rot, to_max_x_rot=to_max_x_rot # Output range
             )
-            """ con = self.make_constraint(
+            con = self.make_constraint(
                 owner_bone_name, 
                 'LIMIT_ROTATION', 
                 owner_space='LOCAL',
-                use_limit_x=True, min_x=radians(-50.2) if i==0 else radians(-6.2), max_x=radians(6.2) if i==0 else radians(50.2), # Lock Y
+                use_limit_x=True, min_x=to_min_x_rot, max_x=to_max_x_rot, # Lock Y
             )
             if con and con.use_legacy_behavior:
-                con.use_legacy_behavior=False """
+                con.use_legacy_behavior=False
             #rig Target Bones
             self.make_constraint(
                 controller, 
@@ -194,6 +196,25 @@ class Rig(BaseRig):
         bones = self.bones.ctrl.eye_lid_top, self.bones.ctrl.eye_lid_bottom, self.bones.ctrl.target
         for bone in bones:
             create_registered_widget(self.obj, bone, 'circle')
+    
+    @classmethod
+    def add_parameters(cls, params):
+        params.angleMax = bpy.props.FloatProperty(
+            name='angleMax',
+            default=20,
+            description='Angle for maximum eyelid Opening'
+        )
+        params.targetMin = bpy.props.FloatProperty(
+            name='angleMax',
+            default=-0.04,
+            description='Location for minimul eyelid control Opening'
+        )
+    
+    @classmethod
+    def parameters_ui(cls, layout, params):
+        r=layout.row()
+        r.prop(params, 'angleMax')
+        r.prop(params, 'targetMin')
 
 
     
