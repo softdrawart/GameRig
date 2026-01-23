@@ -168,7 +168,7 @@ class Rig(TweakChainRig, old_simple_tentacle, RelinkConstraintsMixin):
 
     def rig_bones(self):
         if self.separate_rotation:
-            con = self.make_constraint(self.bones.mch.rot, 'COPY_ROTATION', 'root')
+            con = self.make_constraint(self.bones.mch.rot, 'COPY_ROTATION', 'root', use_xyz=(True,True,False))
 
             if self.create_ctrl:
                 self.make_driver(con, 'influence',
