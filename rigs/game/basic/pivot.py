@@ -20,7 +20,7 @@ class Rig(BoneUtilityMixin, pivot):
     
     #forms a list of bone names from parameter
     def build_list(self):
-        string = self.params.parents
+        string = self.params.extra_parents
         if isinstance(string, str):
             parents = [stripped for item in string.split(',') if (stripped := item.strip())]
             return parents
@@ -30,9 +30,8 @@ class Rig(BoneUtilityMixin, pivot):
         string = self.params.default_parent
         if isinstance(string, str):
             parent = string.replace(" ", "")
-            if self.parent_bones_names:
-                if parent in self.parent_bones_names:
-                    return parent
+            if parent:
+                return parent
         return 'root'
 
 
@@ -51,8 +50,6 @@ class Rig(BoneUtilityMixin, pivot):
             if self.params.register_parent:
                 self.register_parent(name, self.get_parent_tags())
 
-
-
         else:
             self.bones.ctrl.pivot = self.copy_bone(org, make_derived_name(org, 'ctrl'), parent=True)
 
@@ -61,17 +58,25 @@ class Rig(BoneUtilityMixin, pivot):
 
     def build_parent_switch(self, master_name: str):
         pbuilder = SwitchParentBuilder(self.generator)
-
+        
         org_parent = self.get_bone_parent(self.bones.org)
         parents = [org_parent] if org_parent else []
-        if len(self.parent_bones_names) > 0:
-            parents += self.parent_bones_names
+        if self.params.add_extra_parents:
+            if len(self.parent_bones_names) > 0:
+                for b_name in self.parent_bones_names:
+                    if b_name in self.obj.data.edit_bones:
+                        parents.append(b_name)
+                    else:
+                        #self.raise_error(f"The bone name {b_name} of the bone {self.bones.org}!")
+                        print(f"The bone name '{b_name}' in extra parents list of '{self.bones.org}' doesnt exist!")
+
+        default_parent = self.default_parent if self.default_parent else org_parent
 
         pbuilder.build_child(
             self, master_name,
             context_rig=self.rigify_parent, allow_self=True,
             prop_name="Parent ({})".format(master_name),
-            extra_parents=parents, select_parent=self.default_parent or org_parent, exclude_self=True,
+            extra_parents=parents, select_parent=default_parent, exclude_self=True,
             controls=lambda: self.bones.ctrl.flatten()
         )
 
@@ -114,7 +119,8 @@ class Rig(BoneUtilityMixin, pivot):
         """
         super().add_parameters(params)
 
-        params.parents = bpy.props.StringProperty("Parents", description="Parents for switching separated by , ")
+        params.add_extra_parents = bpy.props.BoolProperty(name="Add Extra Parents", default=False, description="Use this if you need to add extra parents to Switchable Parent list")
+        params.extra_parents = bpy.props.StringProperty("Parents", description="Parents for switching separated by , ")
         params.default_parent = bpy.props.StringProperty("Default Parent", description="bone name selected as default parent")
 
         params.enable_scale = bpy.props.BoolProperty(
@@ -129,11 +135,12 @@ class Rig(BoneUtilityMixin, pivot):
         """
         super().parameters_ui(layout, params)
         
-
+        layout.prop(params, 'add_extra_parents')
         if params.make_extra_control:
             r = layout.column()
             r.active = params.make_parent_switch
-            r.prop(params, 'parents', text="Extra Parents")
+            if params.add_extra_parents:
+                r.prop(params, 'extra_parents', text="Extra Parents")
             r.prop(params, 'default_parent', text="Default Parent")
 
         r = layout.row()
