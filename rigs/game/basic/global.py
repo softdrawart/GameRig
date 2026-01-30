@@ -30,15 +30,15 @@ class Rig(BaseRig):
     #generate CTRL bones and Switch Parent
     def generate_bones(self):
         #create controller bone
+        pbuild = SwitchParentBuilder(self.generator)
+        org = self.bones.org
         if self.make_controller:
-            org = self.bones.org
-            ctrl = self.bones.ctrl = self.copy_bone(org, make_derived_name(org, 'ctrl'))
-            pbuild = SwitchParentBuilder(self.generator)
-            pbuild.register_parent(self, bone=org, name=ctrl, is_global=True, exclude_self=True)
+            self.bones.ctrl = self.copy_bone(org, make_derived_name(org, 'ctrl'))
+        pbuild.register_parent(self, bone=org, name=make_derived_name(org, 'ctrl'), is_global=True, exclude_self=False)
         #create deformer bone
         if self.make_deformer:
             org = self.bones.org
-            self.bones.deform = self.copy_bone(org, make_derived_name(org, 'def'))
+            self.bones.deform = self.copy_bone(org, make_derived_name(org, 'def'), parent=True)
 
 
     #parent ORG bone to CTRL
