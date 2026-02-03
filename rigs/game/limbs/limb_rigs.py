@@ -6,6 +6,7 @@ from rigify.base_rig import stage
 from rigify.rigs.limbs.limb_rigs import BaseLimbRig as old_BaseLimbRig
 from rigify.rigs.limbs.limb_rigs import SegmentEntry
 from rigify.utils.naming import choose_derived_bone
+from rigify.utils.switch_parent import SwitchParentBuilder
 
 
 class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
@@ -14,7 +15,35 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
         super().initialize()
         self.bbone_segments = 1
         self.leaf_hierarchy = self.params.leaf_hierarchy
+        self.parent_bones_names = self.build_list()
 
+    #forms a list of bone names from parameter
+    def build_list(self):
+        string = self.params.extra_parents
+        if isinstance(string, str):
+            parents = [stripped for item in string.split(',') if (stripped := item.strip())]
+            return parents
+        return []
+    
+    #Bones Generation
+    def build_ik_parent_switch(self, pbuilder: SwitchParentBuilder):
+        ctrl = self.bones.ctrl
+
+        def master(): return self.bones.ctrl.master
+        def controls(): return [ctrl.master] + self.get_all_ik_controls()
+
+        self.register_switch_parents(pbuilder)
+
+        pbuilder.build_child(
+            self, ctrl.ik, prop_bone=master, select_parent='root',
+            prop_id='IK_parent', prop_name='IK Parent', controls=controls, extra_parents=self.parent_bones_names
+        )
+
+        pbuilder.build_child(
+            self, ctrl.ik_pole, prop_bone=master, extra_parents=self.get_ik_pole_parents,
+            prop_id='pole_parent', prop_name='Pole Parent', controls=controls,
+            no_fix_rotation=True, no_fix_scale=True,
+        )
 
     @stage.parent_bones
     def parent_deform_chain(self):
@@ -120,17 +149,27 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
             RigifyParameters PropertyGroup
         """
         super().add_parameters(params)
+
+        params.add_extra_parents = bpy.props.BoolProperty(name="Add Extra Parents", default=False, description="Use this if you need to add extra parents to Switchable Parent list")
+        params.extra_parents = bpy.props.StringProperty("Parents", description="Parents for switching separated by , ")
+
         params.leaf_hierarchy = bpy.props.BoolProperty(
             name="Leaf Hierarchy",
             default=False,
             description="False means limb segments and tweak bones will create a single chain. True means limb segments will be parented to each other directly and the tweak bones will be parented to their respective segment."
         )
+        
 
     @classmethod
     def parameters_ui(self, layout, params):
         """ Create the ui for the rig parameters.
         """
         super().parameters_ui(layout, params)
+
+        layout.prop(params, 'add_extra_parents')
+        r = layout.column()
+        if params.add_extra_parents:
+            r.prop(params, 'extra_parents', text="Extra Parents")
 
         c = layout.column()
         c.prop(params, "leaf_hierarchy")

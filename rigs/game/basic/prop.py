@@ -39,7 +39,7 @@ class Rig(BaseRig, BoneUtilityMixin):
         self.make_controller = self.params.make_controller
         self.make_deformer = self.params.make_deformer
         self.parent_bones_names = self.build_list()
-        self.default_parent = self.find_default_parent() #pick a parent from the list or root
+        self.default_parent = self.find_default_parent()
     #forms a list of bone names from parameter
     def build_list(self):
         string = self.params.parents
@@ -51,10 +51,9 @@ class Rig(BaseRig, BoneUtilityMixin):
         string = self.params.default_parent
         if isinstance(string, str):
             parent = string.replace(" ", "")
-            if self.parent_bones_names:
-                if parent in self.parent_bones_names:
-                    return parent
-        return 'root'
+            """ if self.parent_bones_names:
+                if parent in self.parent_bones_names: """
+            return parent
 
     #generate CTRL bones and Switch Parent
     def generate_bones(self):
@@ -123,7 +122,7 @@ class Rig(BaseRig, BoneUtilityMixin):
         params.widget_selection = bpy.props.StringProperty("Widget", description="Widget of controller bone", default='cube')
         params.parents = bpy.props.StringProperty("Parents", default="torso, ORG-spine, ORG-spine.003, " \
         "ORG-spine.006, ORG-shoulder.L, ORG-hand.L", description="Parents for switching separated by , ")
-        params.default_parent = bpy.props.StringProperty("Default Parent", default="root")
+        params.default_parent = bpy.props.StringProperty("Default Parent")
         params.inject = bpy.props.BoolProperty("Inject", description="Inject this rig into Parent Rig", default=False)
     @classmethod
     def parameters_ui(cls, layout, params):

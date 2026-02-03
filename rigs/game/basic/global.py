@@ -33,7 +33,7 @@ class Rig(BaseRig):
         pbuild = SwitchParentBuilder(self.generator)
         org = self.bones.org
         if self.make_controller:
-            self.bones.ctrl = self.copy_bone(org, make_derived_name(org, 'ctrl'))
+            self.bones.ctrl = self.copy_bone(org, make_derived_name(org, 'ctrl'), parent=True)
         pbuild.register_parent(self, bone=org, name=make_derived_name(org, 'ctrl'), is_global=True, exclude_self=False)
         #create deformer bone
         if self.make_deformer:

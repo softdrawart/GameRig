@@ -266,90 +266,20 @@ def create(obj):  # noqa
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['foot.R']]
     bones['heel.02.R'] = bone.name
-    bone = arm.edit_bones.new('DEF-eye_up.L')
-    bone.head = 0.0415, -0.0755, 1.3777
-    bone.tail = 0.0459, -0.1104, 1.3882
-    bone.roll = -2.3681
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['DEF-eye_up.L'] = bone.name
-    bone = arm.edit_bones.new('DEF-eye_down.L')
-    bone.head = 0.0415, -0.0755, 1.3777
-    bone.tail = 0.0472, -0.1047, 1.3601
-    bone.roll = 2.5587
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['DEF-eye_down.L'] = bone.name
-    bone = arm.edit_bones.new('DEF-eye.L')
-    bone.head = 0.0415, -0.0755, 1.3777
-    bone.tail = 0.0415, -0.1030, 1.3776
-    bone.roll = -3.1416
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['DEF-eye.L'] = bone.name
-    bone = arm.edit_bones.new('eye_C')
-    bone.head = 0.0000, -0.1929, 1.3797
-    bone.tail = 0.0000, -0.2200, 1.3797
-    bone.roll = -0.0000
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['eye_C'] = bone.name
-    bone = arm.edit_bones.new('eye_up_C.L')
-    bone.head = 0.0460, -0.1096, 1.3908
-    bone.tail = 0.0460, -0.1223, 1.3908
-    bone.roll = 0.0000
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['eye_up_C.L'] = bone.name
-    bone = arm.edit_bones.new('eye_down_C.L')
-    bone.head = 0.0471, -0.1096, 1.3574
-    bone.tail = 0.0471, -0.1222, 1.3574
-    bone.roll = -0.0000
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['eye_down_C.L'] = bone.name
-    bone = arm.edit_bones.new('DEF-eye_up.R')
-    bone.head = -0.0415, -0.0755, 1.3777
-    bone.tail = -0.0459, -0.1104, 1.3882
-    bone.roll = 2.3681
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['DEF-eye_up.R'] = bone.name
-    bone = arm.edit_bones.new('DEF-eye_down.R')
-    bone.head = -0.0415, -0.0755, 1.3777
-    bone.tail = -0.0472, -0.1047, 1.3601
-    bone.roll = -2.5587
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['DEF-eye_down.R'] = bone.name
-    bone = arm.edit_bones.new('DEF-eye.R')
+    bone = arm.edit_bones.new('eye.R')
     bone.head = -0.0415, -0.0755, 1.3777
     bone.tail = -0.0415, -0.1030, 1.3776
     bone.roll = 3.1416
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['head']]
-    bones['DEF-eye.R'] = bone.name
-    bone = arm.edit_bones.new('eye_up_C.R')
-    bone.head = -0.0460, -0.1096, 1.3908
-    bone.tail = -0.0460, -0.1223, 1.3908
-    bone.roll = -0.0000
+    bones['eye.R'] = bone.name
+    bone = arm.edit_bones.new('eye.L')
+    bone.head = 0.0415, -0.0755, 1.3777
+    bone.tail = 0.0415, -0.1030, 1.3776
+    bone.roll = -3.1416
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['head']]
-    bones['eye_up_C.R'] = bone.name
-    bone = arm.edit_bones.new('eye_down_C.R')
-    bone.head = -0.0471, -0.1096, 1.3574
-    bone.tail = -0.0471, -0.1222, 1.3574
-    bone.roll = 0.0000
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['eye_down_C.R'] = bone.name
-    bone = arm.edit_bones.new('glasses')
-    bone.head = 0.0000, -0.1307, 1.3765
-    bone.tail = 0.0000, -0.1689, 1.3765
-    bone.roll = -0.0000
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['glasses'] = bone.name
+    bones['eye.L'] = bone.name
     bone = arm.edit_bones.new('forearm.L')
     bone.head = 0.2709, 0.0304, 0.9369
     bone.tail = 0.3914, 0.0059, 0.7892
@@ -378,20 +308,34 @@ def create(obj):  # noqa
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['toe.R']]
     bones['tip.R'] = bone.name
-    bone = arm.edit_bones.new('eye_C.L')
-    bone.head = 0.0415, -0.1812, 1.3775
-    bone.tail = 0.0415, -0.2083, 1.3775
-    bone.roll = -0.0000
+    bone = arm.edit_bones.new('eye_up.R')
+    bone.head = -0.0415, -0.0755, 1.3777
+    bone.tail = -0.0459, -0.1104, 1.3882
+    bone.roll = 2.3681
     bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['eye_C']]
-    bones['eye_C.L'] = bone.name
-    bone = arm.edit_bones.new('eye_C.R')
-    bone.head = -0.0415, -0.1812, 1.3775
-    bone.tail = -0.0415, -0.2083, 1.3775
-    bone.roll = 0.0000
+    bone.parent = arm.edit_bones[bones['eye.R']]
+    bones['eye_up.R'] = bone.name
+    bone = arm.edit_bones.new('eye_down.R')
+    bone.head = -0.0415, -0.0755, 1.3777
+    bone.tail = -0.0472, -0.1047, 1.3601
+    bone.roll = -2.5587
     bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['eye_C']]
-    bones['eye_C.R'] = bone.name
+    bone.parent = arm.edit_bones[bones['eye.R']]
+    bones['eye_down.R'] = bone.name
+    bone = arm.edit_bones.new('eye_up.L')
+    bone.head = 0.0415, -0.0755, 1.3777
+    bone.tail = 0.0459, -0.1104, 1.3882
+    bone.roll = -2.3681
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['eye.L']]
+    bones['eye_up.L'] = bone.name
+    bone = arm.edit_bones.new('eye_down.L')
+    bone.head = 0.0415, -0.0755, 1.3777
+    bone.tail = 0.0472, -0.1047, 1.3601
+    bone.roll = 2.5587
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['eye.L']]
+    bones['eye_down.L'] = bone.name
     bone = arm.edit_bones.new('hand.L')
     bone.head = 0.3914, 0.0059, 0.7892
     bone.tail = 0.4496, -0.0089, 0.7161
@@ -768,8 +712,12 @@ def create(obj):  # noqa
         pbone.rigify_parameters.make_control = True
     except AttributeError:
         pass
+    try:
+        pbone.rigify_parameters.pivot_master_widget_type = 'bone'
+    except AttributeError:
+        pass
     pbone = obj.pose.bones[bones['cloth.L']]
-    pbone.rigify_type = 'game.cloth.cloth_copy_chain'
+    pbone.rigify_type = 'game.basic.my_simple_tenticle'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -811,7 +759,7 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['cloth.R']]
-    pbone.rigify_type = 'game.cloth.cloth_copy_chain'
+    pbone.rigify_type = 'game.basic.my_simple_tenticle'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -927,7 +875,7 @@ def create(obj):  # noqa
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'YXZ'
+    pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Torso')
     try:
         pbone.rigify_parameters.make_widget = True
@@ -947,7 +895,7 @@ def create(obj):  # noqa
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'YXZ'
+    pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Torso')
     try:
         pbone.rigify_parameters.make_widget = True
@@ -1105,107 +1053,8 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['DEF-eye_up.L']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('COPY_ROTATION')
-    con.name = 'Copy Rotation'
-    con.target = obj
-    con.owner_space = 'LOCAL'
-    con.target_space = 'LOCAL'
-    con.subtarget = 'DEF-eye.L'
-    con.use_x = True
-    con.use_y = False
-    con.use_z = False
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.euler_order = 'AUTO'
-    con.mix_mode = 'REPLACE'
-    con.use_offset = False
-    con = pbone.constraints.new('TRANSFORM')
-    con.name = 'Transformation'
-    con.target = obj
-    con.owner_space = 'LOCAL'
-    con.target_space = 'LOCAL'
-    con.subtarget = 'eye_up_C.L'
-    con.map_from = 'LOCATION'
-    con.map_to = 'ROTATION'
-    con.map_to_x_from = 'Z'
-    con.map_to_y_from = 'Y'
-    con.map_to_z_from = 'X'
-    con.use_motion_extrapolate = False
-    con.from_rotation_mode = 'AUTO'
-    con.to_euler_order = 'AUTO'
-    con.from_min_x = 0.0
-    con.from_min_y = 0.0
-    con.from_min_z = -0.03999999910593033
-    con.from_max_x = 0.0
-    con.from_max_y = 0.0
-    con.from_max_z = 0.03999999910593033
-    con.to_min_x = 0.0
-    con.to_min_y = 0.0
-    con.to_min_z = 0.0
-    con.to_max_x = 0.0
-    con.to_max_y = 0.0
-    con.to_max_z = 0.0
-    con.mix_mode = 'ADD'
-    con.from_min_x_rot = 0.0
-    con.from_min_y_rot = 0.0
-    con.from_min_z_rot = 0.0
-    con.from_max_x_rot = 0.0
-    con.from_max_y_rot = 0.0
-    con.from_max_z_rot = 0.0
-    con.to_min_x_rot = -0.8726646304130554
-    con.to_min_y_rot = 0.0
-    con.to_min_z_rot = 0.0
-    con.to_max_x_rot = 0.8726646304130554
-    con.to_max_y_rot = 0.0
-    con.to_max_z_rot = 0.0
-    con.mix_mode_rot = 'ADD'
-    con.from_min_x_scale = 1.0
-    con.from_min_y_scale = 1.0
-    con.from_min_z_scale = 1.0
-    con.from_max_x_scale = 1.0
-    con.from_max_y_scale = 1.0
-    con.from_max_z_scale = 1.0
-    con.to_min_x_scale = 1.0
-    con.to_min_y_scale = 1.0
-    con.to_min_z_scale = 1.0
-    con.to_max_x_scale = 1.0
-    con.to_max_y_scale = 1.0
-    con.to_max_z_scale = 1.0
-    con.mix_mode_scale = 'REPLACE'
-    con = pbone.constraints.new('LIMIT_ROTATION')
-    con.name = 'Limit Rotation'
-    con.owner_space = 'LOCAL'
-    con.use_limit_x = True
-    con.use_limit_y = False
-    con.use_limit_z = False
-    con.min_x = -0.8761552572250366
-    con.min_y = 0.0
-    con.min_z = 0.0
-    con.max_x = 0.0
-    con.max_y = 0.0
-    con.max_z = 0.0
-    con.euler_order = 'AUTO'
-    con.use_transform_limit = False
-    con.use_legacy_behavior = False
-    pbone = obj.pose.bones[bones['DEF-eye_down.L']]
-    pbone.rigify_type = 'game.basic.raw_copy'
+    pbone = obj.pose.bones[bones['eye.R']]
+    pbone.rigify_type = 'game.face.vizor_eye'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -1224,91 +1073,8 @@ def create(obj):  # noqa
         pbone.rigify_parameters.relink_constraints = True
     except AttributeError:
         pass
-    con = pbone.constraints.new('COPY_ROTATION')
-    con.name = 'Copy Rotation'
-    con.target = obj
-    con.owner_space = 'LOCAL'
-    con.target_space = 'LOCAL'
-    con.subtarget = 'DEF-eye.L'
-    con.use_x = True
-    con.use_y = False
-    con.use_z = False
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.euler_order = 'AUTO'
-    con.mix_mode = 'REPLACE'
-    con.use_offset = False
-    con = pbone.constraints.new('TRANSFORM')
-    con.name = 'Transformation'
-    con.target = obj
-    con.owner_space = 'LOCAL'
-    con.target_space = 'LOCAL'
-    con.subtarget = 'eye_down_C.L'
-    con.map_from = 'LOCATION'
-    con.map_to = 'ROTATION'
-    con.map_to_x_from = 'Z'
-    con.map_to_y_from = 'Y'
-    con.map_to_z_from = 'X'
-    con.use_motion_extrapolate = False
-    con.from_rotation_mode = 'AUTO'
-    con.to_euler_order = 'AUTO'
-    con.from_min_x = 0.0
-    con.from_min_y = 0.0
-    con.from_min_z = -0.03999999910593033
-    con.from_max_x = 0.0
-    con.from_max_y = 0.0
-    con.from_max_z = 0.03999999910593033
-    con.to_min_x = 0.0
-    con.to_min_y = 0.0
-    con.to_min_z = 0.0
-    con.to_max_x = 0.0
-    con.to_max_y = 0.0
-    con.to_max_z = 0.0
-    con.mix_mode = 'ADD'
-    con.from_min_x_rot = 0.0
-    con.from_min_y_rot = 0.0
-    con.from_min_z_rot = 0.0
-    con.from_max_x_rot = 0.0
-    con.from_max_y_rot = 0.0
-    con.from_max_z_rot = 0.0
-    con.to_min_x_rot = -0.8726646304130554
-    con.to_min_y_rot = 0.0
-    con.to_min_z_rot = 0.0
-    con.to_max_x_rot = 0.8726646304130554
-    con.to_max_y_rot = 0.0
-    con.to_max_z_rot = 0.0
-    con.mix_mode_rot = 'ADD'
-    con.from_min_x_scale = 1.0
-    con.from_min_y_scale = 1.0
-    con.from_min_z_scale = 1.0
-    con.from_max_x_scale = 1.0
-    con.from_max_y_scale = 1.0
-    con.from_max_z_scale = 1.0
-    con.to_min_x_scale = 1.0
-    con.to_min_y_scale = 1.0
-    con.to_min_z_scale = 1.0
-    con.to_max_x_scale = 1.0
-    con.to_max_y_scale = 1.0
-    con.to_max_z_scale = 1.0
-    con.mix_mode_scale = 'REPLACE'
-    con = pbone.constraints.new('LIMIT_ROTATION')
-    con.name = 'Limit Rotation'
-    con.owner_space = 'LOCAL'
-    con.use_limit_x = True
-    con.use_limit_y = False
-    con.use_limit_z = False
-    con.min_x = -0.10297447443008423
-    con.min_y = 0.0
-    con.min_z = 0.0
-    con.max_x = 0.8726646304130554
-    con.max_y = 0.0
-    con.max_z = 0.0
-    con.euler_order = 'AUTO'
-    con.use_transform_limit = False
-    con.use_legacy_behavior = False
-    pbone = obj.pose.bones[bones['DEF-eye.L']]
-    pbone.rigify_type = 'game.basic.raw_copy'
+    pbone = obj.pose.bones[bones['eye.L']]
+    pbone.rigify_type = 'game.face.vizor_eye'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -1325,426 +1091,6 @@ def create(obj):  # noqa
         pass
     try:
         pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('DAMPED_TRACK')
-    con.name = 'Damped Track'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'eye_C.L'
-    con.track_axis = 'TRACK_Y'
-    pbone = obj.pose.bones[bones['eye_C']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'diamond'
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['eye_up_C.L']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (True, True, False)
-    pbone.lock_rotation = (True, True, True)
-    pbone.lock_rotation_w = True
-    pbone.lock_scale = (True, True, True)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'circle'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('LIMIT_LOCATION')
-    con.name = 'Limit Location'
-    con.owner_space = 'LOCAL'
-    con.use_min_x = False
-    con.use_min_y = False
-    con.use_min_z = True
-    con.use_max_x = False
-    con.use_max_y = False
-    con.use_max_z = True
-    con.min_x = 0.0
-    con.min_y = 0.0
-    con.min_z = -0.04111799970269203
-    con.max_x = 0.0
-    con.max_y = 0.0
-    con.max_z = 0.006668000016361475
-    con.use_transform_limit = False
-    pbone = obj.pose.bones[bones['eye_down_C.L']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (True, True, False)
-    pbone.lock_rotation = (True, True, True)
-    pbone.lock_rotation_w = True
-    pbone.lock_scale = (True, True, True)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'circle'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('LIMIT_LOCATION')
-    con.name = 'Limit Location'
-    con.owner_space = 'LOCAL'
-    con.use_min_x = False
-    con.use_min_y = False
-    con.use_min_z = True
-    con.use_max_x = False
-    con.use_max_y = False
-    con.use_max_z = True
-    con.min_x = 0.0
-    con.min_y = 0.0
-    con.min_z = -0.004912000149488449
-    con.max_x = 0.0
-    con.max_y = 0.0
-    con.max_z = 0.043331995606422424
-    con.use_transform_limit = False
-    pbone = obj.pose.bones[bones['DEF-eye_up.R']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('COPY_ROTATION')
-    con.name = 'Copy Rotation'
-    con.target = obj
-    con.owner_space = 'LOCAL'
-    con.target_space = 'LOCAL'
-    con.subtarget = 'DEF-eye.R'
-    con.use_x = True
-    con.use_y = False
-    con.use_z = False
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.euler_order = 'AUTO'
-    con.mix_mode = 'REPLACE'
-    con.use_offset = False
-    con = pbone.constraints.new('TRANSFORM')
-    con.name = 'Transformation'
-    con.target = obj
-    con.owner_space = 'LOCAL'
-    con.target_space = 'LOCAL'
-    con.subtarget = 'eye_up_C.R'
-    con.map_from = 'LOCATION'
-    con.map_to = 'ROTATION'
-    con.map_to_x_from = 'Z'
-    con.map_to_y_from = 'Y'
-    con.map_to_z_from = 'X'
-    con.use_motion_extrapolate = False
-    con.from_rotation_mode = 'AUTO'
-    con.to_euler_order = 'AUTO'
-    con.from_min_x = -0.0
-    con.from_min_y = 0.0
-    con.from_min_z = -0.03999999910593033
-    con.from_max_x = 0.0
-    con.from_max_y = 0.0
-    con.from_max_z = 0.03999999910593033
-    con.to_min_x = 0.0
-    con.to_min_y = 0.0
-    con.to_min_z = 0.0
-    con.to_max_x = 0.0
-    con.to_max_y = 0.0
-    con.to_max_z = 0.0
-    con.mix_mode = 'ADD'
-    con.from_min_x_rot = 0.0
-    con.from_min_y_rot = 0.0
-    con.from_min_z_rot = 0.0
-    con.from_max_x_rot = 0.0
-    con.from_max_y_rot = 0.0
-    con.from_max_z_rot = 0.0
-    con.to_min_x_rot = -0.8726646304130554
-    con.to_min_y_rot = 0.0
-    con.to_min_z_rot = 0.0
-    con.to_max_x_rot = 0.8726646304130554
-    con.to_max_y_rot = 0.0
-    con.to_max_z_rot = 0.0
-    con.mix_mode_rot = 'ADD'
-    con.from_min_x_scale = 1.0
-    con.from_min_y_scale = 1.0
-    con.from_min_z_scale = 1.0
-    con.from_max_x_scale = 1.0
-    con.from_max_y_scale = 1.0
-    con.from_max_z_scale = 1.0
-    con.to_min_x_scale = 1.0
-    con.to_min_y_scale = 1.0
-    con.to_min_z_scale = 1.0
-    con.to_max_x_scale = 1.0
-    con.to_max_y_scale = 1.0
-    con.to_max_z_scale = 1.0
-    con.mix_mode_scale = 'REPLACE'
-    con = pbone.constraints.new('LIMIT_ROTATION')
-    con.name = 'Limit Rotation'
-    con.owner_space = 'LOCAL'
-    con.use_limit_x = True
-    con.use_limit_y = False
-    con.use_limit_z = False
-    con.min_x = -0.8761552572250366
-    con.min_y = 0.0
-    con.min_z = 0.0
-    con.max_x = 0.0
-    con.max_y = 0.0
-    con.max_z = 0.0
-    con.euler_order = 'AUTO'
-    con.use_transform_limit = False
-    con.use_legacy_behavior = False
-    pbone = obj.pose.bones[bones['DEF-eye_down.R']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_widget = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('COPY_ROTATION')
-    con.name = 'Copy Rotation'
-    con.target = obj
-    con.owner_space = 'LOCAL'
-    con.target_space = 'LOCAL'
-    con.subtarget = 'DEF-eye.R'
-    con.use_x = True
-    con.use_y = False
-    con.use_z = False
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.euler_order = 'AUTO'
-    con.mix_mode = 'REPLACE'
-    con.use_offset = False
-    con = pbone.constraints.new('TRANSFORM')
-    con.name = 'Transformation'
-    con.target = obj
-    con.owner_space = 'LOCAL'
-    con.target_space = 'LOCAL'
-    con.subtarget = 'eye_down_C.R'
-    con.map_from = 'LOCATION'
-    con.map_to = 'ROTATION'
-    con.map_to_x_from = 'Z'
-    con.map_to_y_from = 'Y'
-    con.map_to_z_from = 'X'
-    con.use_motion_extrapolate = False
-    con.from_rotation_mode = 'AUTO'
-    con.to_euler_order = 'AUTO'
-    con.from_min_x = -0.0
-    con.from_min_y = 0.0
-    con.from_min_z = -0.03999999910593033
-    con.from_max_x = 0.0
-    con.from_max_y = 0.0
-    con.from_max_z = 0.03999999910593033
-    con.to_min_x = 0.0
-    con.to_min_y = 0.0
-    con.to_min_z = 0.0
-    con.to_max_x = 0.0
-    con.to_max_y = 0.0
-    con.to_max_z = 0.0
-    con.mix_mode = 'ADD'
-    con.from_min_x_rot = 0.0
-    con.from_min_y_rot = 0.0
-    con.from_min_z_rot = 0.0
-    con.from_max_x_rot = 0.0
-    con.from_max_y_rot = 0.0
-    con.from_max_z_rot = 0.0
-    con.to_min_x_rot = -0.8726646304130554
-    con.to_min_y_rot = 0.0
-    con.to_min_z_rot = 0.0
-    con.to_max_x_rot = 0.8726646304130554
-    con.to_max_y_rot = 0.0
-    con.to_max_z_rot = 0.0
-    con.mix_mode_rot = 'ADD'
-    con.from_min_x_scale = 1.0
-    con.from_min_y_scale = 1.0
-    con.from_min_z_scale = 1.0
-    con.from_max_x_scale = 1.0
-    con.from_max_y_scale = 1.0
-    con.from_max_z_scale = 1.0
-    con.to_min_x_scale = 1.0
-    con.to_min_y_scale = 1.0
-    con.to_min_z_scale = 1.0
-    con.to_max_x_scale = 1.0
-    con.to_max_y_scale = 1.0
-    con.to_max_z_scale = 1.0
-    con.mix_mode_scale = 'REPLACE'
-    con = pbone.constraints.new('LIMIT_ROTATION')
-    con.name = 'Limit Rotation'
-    con.owner_space = 'LOCAL'
-    con.use_limit_x = True
-    con.use_limit_y = False
-    con.use_limit_z = False
-    con.min_x = -0.10297447443008423
-    con.min_y = 0.0
-    con.min_z = 0.0
-    con.max_x = 0.8726646304130554
-    con.max_y = 0.0
-    con.max_z = 0.0
-    con.euler_order = 'AUTO'
-    con.use_transform_limit = False
-    con.use_legacy_behavior = False
-    pbone = obj.pose.bones[bones['DEF-eye.R']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_widget = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('DAMPED_TRACK')
-    con.name = 'Damped Track'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'eye_C.R'
-    con.track_axis = 'TRACK_Y'
-    pbone = obj.pose.bones[bones['eye_up_C.R']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (True, True, False)
-    pbone.lock_rotation = (True, True, True)
-    pbone.lock_rotation_w = True
-    pbone.lock_scale = (True, True, True)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'circle'
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('LIMIT_LOCATION')
-    con.name = 'Limit Location'
-    con.owner_space = 'LOCAL'
-    con.use_min_x = False
-    con.use_min_y = False
-    con.use_min_z = True
-    con.use_max_x = False
-    con.use_max_y = False
-    con.use_max_z = True
-    con.min_x = -0.0
-    con.min_y = 0.0
-    con.min_z = -0.04111799970269203
-    con.max_x = 0.0
-    con.max_y = 0.0
-    con.max_z = 0.006668000016361475
-    con.use_transform_limit = False
-    pbone = obj.pose.bones[bones['eye_down_C.R']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (True, True, False)
-    pbone.lock_rotation = (True, True, True)
-    pbone.lock_rotation_w = True
-    pbone.lock_scale = (True, True, True)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'circle'
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('LIMIT_LOCATION')
-    con.name = 'Limit Location'
-    con.owner_space = 'LOCAL'
-    con.use_min_x = False
-    con.use_min_y = False
-    con.use_min_z = True
-    con.use_max_x = False
-    con.use_max_y = False
-    con.use_max_z = True
-    con.min_x = -0.0
-    con.min_y = 0.0
-    con.min_z = -0.004912000149488449
-    con.max_x = 0.0
-    con.max_y = 0.0
-    con.max_z = 0.043331995606422424
-    con.use_transform_limit = False
-    pbone = obj.pose.bones[bones['glasses']]
-    pbone.rigify_type = 'game.basic.super_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.super_copy_widget_type = 'cube'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_extra_control = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_parent_switch = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_control = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_extra_deform = True
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['forearm.L']]
@@ -1795,8 +1141,8 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['eye_C.L']]
-    pbone.rigify_type = 'game.basic.raw_copy'
+    pbone = obj.pose.bones[bones['eye_up.R']]
+    pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -1808,11 +1154,11 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     try:
-        pbone.rigify_parameters.optional_widget_type = 'circle'
+        pbone.rigify_parameters.relink_constraints = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['eye_C.R']]
-    pbone.rigify_type = 'game.basic.raw_copy'
+    pbone = obj.pose.bones[bones['eye_down.R']]
+    pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -1824,7 +1170,47 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     try:
-        pbone.rigify_parameters.optional_widget_type = 'circle'
+        pbone.rigify_parameters.make_widget = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.relink_constraints = True
+    except AttributeError:
+        pass
+    pbone = obj.pose.bones[bones['eye_up.L']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Torso')
+    try:
+        pbone.rigify_parameters.enable_scale = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.relink_constraints = True
+    except AttributeError:
+        pass
+    pbone = obj.pose.bones[bones['eye_down.L']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Torso')
+    try:
+        pbone.rigify_parameters.enable_scale = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.make_widget = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.relink_constraints = True
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['hand.L']]
@@ -2278,3 +1664,4 @@ def create(obj):  # noqa
     arm.collections.active_index = 0
 
     return bones
+

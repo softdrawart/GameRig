@@ -14,6 +14,7 @@ class Rig(BoneUtilityMixin, pivot):
 
         """ Gather and validate data about the rig.
         """
+        self.org_parent = self.get_bone_parent(self.bones.org)
         self.enable_scale = self.params.enable_scale
         self.parent_bones_names = self.build_list()
         self.default_parent = self.find_default_parent()
@@ -32,7 +33,6 @@ class Rig(BoneUtilityMixin, pivot):
             parent = string.replace(" ", "")
             if parent:
                 return parent
-        return 'root'
 
 
     def generate_bones(self):
@@ -56,27 +56,29 @@ class Rig(BoneUtilityMixin, pivot):
         if self.make_deform:
             self.bones.deform = self.copy_bone(org, make_derived_name(org, 'def'), parent = True, bbone=True)
 
-    def build_parent_switch(self, master_name: str):
-        pbuilder = SwitchParentBuilder(self.generator)
-        
-        org_parent = self.get_bone_parent(self.bones.org)
+    def find_parents(self):
+        org_parent = self.org_parent
         parents = [org_parent] if org_parent else []
         if self.params.add_extra_parents:
             if len(self.parent_bones_names) > 0:
                 for b_name in self.parent_bones_names:
-                    if b_name in self.obj.data.edit_bones:
+                    if b_name in self.obj.data.bones:
                         parents.append(b_name)
                     else:
                         #self.raise_error(f"The bone name {b_name} of the bone {self.bones.org}!")
                         print(f"The bone name '{b_name}' in extra parents list of '{self.bones.org}' doesnt exist!")
+        return parents
 
-        default_parent = self.default_parent if self.default_parent else org_parent
+    def build_parent_switch(self, master_name: str):
+        pbuilder = SwitchParentBuilder(self.generator)
+
+        default_parent = self.default_parent if self.default_parent else self.org_parent
 
         pbuilder.build_child(
             self, master_name,
             context_rig=self.rigify_parent, allow_self=True,
             prop_name="Parent ({})".format(master_name),
-            extra_parents=parents, select_parent=default_parent, exclude_self=True,
+            extra_parents=lambda: self.find_parents(), select_parent=default_parent or 'root', exclude_self=True,
             controls=lambda: self.bones.ctrl.flatten()
         )
 
@@ -138,7 +140,6 @@ class Rig(BoneUtilityMixin, pivot):
         layout.prop(params, 'add_extra_parents')
         if params.make_extra_control:
             r = layout.column()
-            r.active = params.make_parent_switch
             if params.add_extra_parents:
                 r.prop(params, 'extra_parents', text="Extra Parents")
             r.prop(params, 'default_parent', text="Default Parent")
