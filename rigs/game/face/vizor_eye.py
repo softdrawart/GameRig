@@ -240,7 +240,10 @@ class EyeClusterControl(GeneratorPlugin, BaseRigMixin):
         if len(self.rig_list) > 1:
             new_position = Vector((0,0,0))
             for rig in self.rig_list:
-                new_position += self.get_bone(rig.bones.ctrl.target).head
+                try:
+                    new_position += self.get_bone(rig.bones.ctrl.target).head
+                except AttributeError:
+                    self.raise_error(f"{rig.bones.ctrl} does not have target name specified for eyes make_master_bone position!")
             new_position /= len(self.rig_list) #get avarage position for master control
             target_bone_name = self.rig_list[0].bones.ctrl.target
             self.master_bone = master_bone_name = self.copy_bone(target_bone_name, make_derived_name(change_name_side(target_bone_name, side=Side.MIDDLE), 'ctrl'), parent=True)
