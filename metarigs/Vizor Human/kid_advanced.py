@@ -1,5 +1,7 @@
 import bpy
 
+from rna_prop_ui import rna_idprop_ui_create
+
 from mathutils import Color
 
 
@@ -67,8 +69,6 @@ def create(obj):  # noqa
                 ref_list.add().set_collection(bone_collections[name])
 
     add_bone_collection('Face', ui_row=1, color_set_id=5)
-    add_bone_collection('Face (Primary)', ui_row=2, color_set_id=2)
-    add_bone_collection('Face (Secondary)', ui_row=2, color_set_id=3)
     add_bone_collection('Torso', ui_row=3, color_set_id=3)
     add_bone_collection('Torso (Tweak)', ui_row=4, color_set_id=4)
     add_bone_collection('Fingers', ui_row=5, color_set_id=6)
@@ -94,468 +94,440 @@ def create(obj):  # noqa
 
     bone = arm.edit_bones.new('char_root')
     bone.head = 0.0000, 0.0000, 0.0000
-    bone.tail = 0.0000, 0.1901, 0.0000
+    bone.tail = 0.0000, 0.1396, 0.0000
     bone.roll = 0.0000
     bone.use_connect = False
     bones['char_root'] = bone.name
     bone = arm.edit_bones.new('spine')
-    bone.head = 0.0000, -0.0263, 0.6942
-    bone.tail = 0.0000, -0.0263, 0.8076
+    bone.head = 0.0000, -0.0193, 0.5097
+    bone.tail = 0.0000, -0.0193, 0.5929
     bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['char_root']]
     bones['spine'] = bone.name
     bone = arm.edit_bones.new('spine.001')
-    bone.head = 0.0000, -0.0263, 0.8076
-    bone.tail = 0.0000, -0.0253, 0.9827
+    bone.head = 0.0000, -0.0193, 0.5929
+    bone.tail = 0.0000, -0.0186, 0.7215
     bone.roll = 0.0000
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['spine']]
     bones['spine.001'] = bone.name
     bone = arm.edit_bones.new('thigh.L')
-    bone.head = 0.0793, -0.0335, 0.7124
-    bone.tail = 0.1035, -0.0213, 0.3929
-    bone.roll = -0.0829
+    bone.head = 0.0582, -0.0246, 0.5230
+    bone.tail = 0.0763, -0.0228, 0.2842
+    bone.roll = -0.0828
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine']]
     bones['thigh.L'] = bone.name
     bone = arm.edit_bones.new('thigh.R')
-    bone.head = -0.0793, -0.0335, 0.7124
-    bone.tail = -0.1035, -0.0213, 0.3929
-    bone.roll = 0.0829
+    bone.head = -0.0582, -0.0246, 0.5230
+    bone.tail = -0.0763, -0.0228, 0.2842
+    bone.roll = 0.0828
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine']]
     bones['thigh.R'] = bone.name
     bone = arm.edit_bones.new('toolBone')
-    bone.head = -0.6188, 0.0000, 0.8800
-    bone.tail = -0.6188, -0.0000, 0.4200
+    bone.head = -0.4543, 0.0000, 0.6461
+    bone.tail = -0.4543, -0.0000, 0.3084
     bone.roll = -0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine']]
     bones['toolBone'] = bone.name
-    bone = arm.edit_bones.new('cloth.L')
-    bone.head = 0.0870, -0.1219, 0.7788
-    bone.tail = 0.0965, -0.1157, 0.6243
-    bone.roll = -0.0516
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['spine']]
-    bones['cloth.L'] = bone.name
-    bone = arm.edit_bones.new('cloth.R')
-    bone.head = -0.0870, -0.1219, 0.7788
-    bone.tail = -0.0965, -0.1157, 0.6243
-    bone.roll = 0.0516
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['spine']]
-    bones['cloth.R'] = bone.name
     bone = arm.edit_bones.new('spine.003')
-    bone.head = 0.0000, -0.0253, 0.9827
-    bone.tail = -0.0000, 0.0038, 1.1627
+    bone.head = 0.0000, -0.0186, 0.7215
+    bone.tail = -0.0000, 0.0028, 0.8536
     bone.roll = 0.0000
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['spine.001']]
     bones['spine.003'] = bone.name
     bone = arm.edit_bones.new('shin.L')
-    bone.head = 0.1035, -0.0213, 0.3929
-    bone.tail = 0.1262, 0.0196, 0.0957
-    bone.roll = -0.0789
+    bone.head = 0.0763, -0.0228, 0.2842
+    bone.tail = 0.0927, 0.0144, 0.0702
+    bone.roll = -0.0790
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['thigh.L']]
     bones['shin.L'] = bone.name
     bone = arm.edit_bones.new('shin.R')
-    bone.head = -0.1035, -0.0213, 0.3929
-    bone.tail = -0.1262, 0.0196, 0.0957
-    bone.roll = 0.0789
+    bone.head = -0.0763, -0.0228, 0.2842
+    bone.tail = -0.0927, 0.0144, 0.0702
+    bone.roll = 0.0790
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['thigh.R']]
     bones['shin.R'] = bone.name
-    bone = arm.edit_bones.new('cloth.L.001')
-    bone.head = 0.0965, -0.1157, 0.6243
-    bone.tail = 0.1061, -0.1095, 0.4698
-    bone.roll = -0.0516
-    bone.use_connect = True
-    bone.parent = arm.edit_bones[bones['cloth.L']]
-    bones['cloth.L.001'] = bone.name
-    bone = arm.edit_bones.new('cloth.R.001')
-    bone.head = -0.0965, -0.1157, 0.6243
-    bone.tail = -0.1061, -0.1095, 0.4698
-    bone.roll = 0.0516
-    bone.use_connect = True
-    bone.parent = arm.edit_bones[bones['cloth.R']]
-    bones['cloth.R.001'] = bone.name
     bone = arm.edit_bones.new('neck.001')
-    bone.head = -0.0000, 0.0038, 1.1627
-    bone.tail = 0.0000, -0.0020, 1.2812
+    bone.head = -0.0000, 0.0028, 0.8536
+    bone.tail = 0.0000, -0.0015, 0.9406
     bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine.003']]
     bones['neck.001'] = bone.name
     bone = arm.edit_bones.new('shoulder.L')
-    bone.head = 0.0409, 0.0128, 1.1419
-    bone.tail = 0.1377, 0.0211, 1.1041
+    bone.head = 0.0300, 0.0094, 0.8384
+    bone.tail = 0.1011, 0.0155, 0.8106
     bone.roll = 1.9016
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine.003']]
     bones['shoulder.L'] = bone.name
     bone = arm.edit_bones.new('shoulder.R')
-    bone.head = -0.0409, 0.0128, 1.1419
-    bone.tail = -0.1377, 0.0211, 1.1041
+    bone.head = -0.0300, 0.0094, 0.8384
+    bone.tail = -0.1011, 0.0155, 0.8106
     bone.roll = -1.9016
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine.003']]
     bones['shoulder.R'] = bone.name
     bone = arm.edit_bones.new('foot.L')
-    bone.head = 0.1262, 0.0196, 0.0957
-    bone.tail = 0.1295, -0.0505, 0.0390
+    bone.head = 0.0927, 0.0144, 0.0702
+    bone.tail = 0.0951, -0.0371, 0.0286
     bone.roll = -0.1185
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['shin.L']]
     bones['foot.L'] = bone.name
     bone = arm.edit_bones.new('foot.R')
-    bone.head = -0.1262, 0.0196, 0.0957
-    bone.tail = -0.1295, -0.0505, 0.0390
+    bone.head = -0.0927, 0.0144, 0.0702
+    bone.tail = -0.0951, -0.0371, 0.0286
     bone.roll = 0.1185
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['shin.R']]
     bones['foot.R'] = bone.name
     bone = arm.edit_bones.new('head')
-    bone.head = 0.0000, -0.0020, 1.2812
-    bone.tail = 0.0000, -0.0015, 1.5185
+    bone.head = 0.0000, -0.0015, 0.9406
+    bone.tail = 0.0000, -0.0011, 1.1149
     bone.roll = 0.0000
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['neck.001']]
     bones['head'] = bone.name
     bone = arm.edit_bones.new('upper_arm.L')
-    bone.head = 0.1377, 0.0211, 1.1041
-    bone.tail = 0.2709, 0.0304, 0.9369
+    bone.head = 0.1011, 0.0155, 0.8106
+    bone.tail = 0.1989, 0.0223, 0.6879
     bone.roll = 2.3954
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['shoulder.L']]
     bones['upper_arm.L'] = bone.name
     bone = arm.edit_bones.new('upper_arm.R')
-    bone.head = -0.1377, 0.0211, 1.1041
-    bone.tail = -0.2709, 0.0304, 0.9369
+    bone.head = -0.1011, 0.0155, 0.8106
+    bone.tail = -0.1989, 0.0223, 0.6879
     bone.roll = -2.3954
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['shoulder.R']]
     bones['upper_arm.R'] = bone.name
     bone = arm.edit_bones.new('toe.L')
-    bone.head = 0.1295, -0.0505, 0.0390
-    bone.tail = 0.1342, -0.1285, 0.0391
+    bone.head = 0.0951, -0.0371, 0.0286
+    bone.tail = 0.0985, -0.0943, 0.0287
     bone.roll = -0.0337
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['foot.L']]
     bones['toe.L'] = bone.name
     bone = arm.edit_bones.new('heel.02.L')
-    bone.head = 0.0878, 0.0675, 0.0000
-    bone.tail = 0.1964, 0.0675, 0.0000
+    bone.head = 0.0591, 0.0558, 0.0000
+    bone.tail = 0.1412, 0.0558, 0.0000
     bone.roll = -0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['foot.L']]
     bones['heel.02.L'] = bone.name
     bone = arm.edit_bones.new('toe.R')
-    bone.head = -0.1295, -0.0505, 0.0390
-    bone.tail = -0.1342, -0.1285, 0.0391
+    bone.head = -0.0951, -0.0371, 0.0286
+    bone.tail = -0.0985, -0.0943, 0.0287
     bone.roll = 0.0337
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['foot.R']]
     bones['toe.R'] = bone.name
     bone = arm.edit_bones.new('heel.02.R')
-    bone.head = -0.0878, 0.0675, 0.0000
-    bone.tail = -0.1964, 0.0675, 0.0000
+    bone.head = -0.0591, 0.0558, 0.0000
+    bone.tail = -0.1412, 0.0558, 0.0000
     bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['foot.R']]
     bones['heel.02.R'] = bone.name
-    bone = arm.edit_bones.new('eye.R')
-    bone.head = -0.0415, -0.0755, 1.3777
-    bone.tail = -0.0415, -0.1030, 1.3776
-    bone.roll = 3.1416
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['head']]
-    bones['eye.R'] = bone.name
     bone = arm.edit_bones.new('eye.L')
-    bone.head = 0.0415, -0.0755, 1.3777
-    bone.tail = 0.0415, -0.1030, 1.3776
-    bone.roll = -3.1416
+    bone.head = 0.0403, -0.0619, 1.0357
+    bone.tail = 0.0403, -0.0961, 1.0357
+    bone.roll = 3.1415
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['head']]
     bones['eye.L'] = bone.name
+    bone = arm.edit_bones.new('eye.R')
+    bone.head = -0.0403, -0.0619, 1.0357
+    bone.tail = -0.0403, -0.0961, 1.0357
+    bone.roll = -3.1415
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['head']]
+    bones['eye.R'] = bone.name
     bone = arm.edit_bones.new('forearm.L')
-    bone.head = 0.2709, 0.0304, 0.9369
-    bone.tail = 0.3914, 0.0059, 0.7892
+    bone.head = 0.1989, 0.0223, 0.6879
+    bone.tail = 0.2874, 0.0043, 0.5794
     bone.roll = 2.4592
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['upper_arm.L']]
     bones['forearm.L'] = bone.name
     bone = arm.edit_bones.new('forearm.R')
-    bone.head = -0.2709, 0.0304, 0.9369
-    bone.tail = -0.3914, 0.0059, 0.7892
+    bone.head = -0.1989, 0.0223, 0.6879
+    bone.tail = -0.2874, 0.0043, 0.5794
     bone.roll = -2.4592
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['upper_arm.R']]
     bones['forearm.R'] = bone.name
     bone = arm.edit_bones.new('tip.L')
-    bone.head = 0.1322, -0.1311, 0.0000
-    bone.tail = 0.1322, -0.1545, 0.0000
+    bone.head = 0.0971, -0.1188, 0.0000
+    bone.tail = 0.0971, -0.1360, 0.0000
     bone.roll = -0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['toe.L']]
     bones['tip.L'] = bone.name
     bone = arm.edit_bones.new('tip.R')
-    bone.head = -0.1322, -0.1311, 0.0000
-    bone.tail = -0.1322, -0.1545, 0.0000
+    bone.head = -0.0971, -0.1188, 0.0000
+    bone.tail = -0.0971, -0.1360, 0.0000
     bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['toe.R']]
     bones['tip.R'] = bone.name
-    bone = arm.edit_bones.new('eye_up.R')
-    bone.head = -0.0415, -0.0755, 1.3777
-    bone.tail = -0.0459, -0.1104, 1.3882
-    bone.roll = 2.3681
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['eye.R']]
-    bones['eye_up.R'] = bone.name
-    bone = arm.edit_bones.new('eye_down.R')
-    bone.head = -0.0415, -0.0755, 1.3777
-    bone.tail = -0.0472, -0.1047, 1.3601
-    bone.roll = -2.5587
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['eye.R']]
-    bones['eye_down.R'] = bone.name
     bone = arm.edit_bones.new('eye_up.L')
-    bone.head = 0.0415, -0.0755, 1.3777
-    bone.tail = 0.0459, -0.1104, 1.3882
-    bone.roll = -2.3681
+    bone.head = 0.0403, -0.0619, 1.0357
+    bone.tail = 0.0493, -0.0981, 1.0489
+    bone.roll = -1.8568
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['eye.L']]
     bones['eye_up.L'] = bone.name
     bone = arm.edit_bones.new('eye_down.L')
-    bone.head = 0.0415, -0.0755, 1.3777
-    bone.tail = 0.0472, -0.1047, 1.3601
-    bone.roll = 2.5587
+    bone.head = 0.0403, -0.0619, 1.0357
+    bone.tail = 0.0495, -0.0921, 1.0181
+    bone.roll = 2.1599
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['eye.L']]
     bones['eye_down.L'] = bone.name
+    bone = arm.edit_bones.new('eye_up.R')
+    bone.head = -0.0403, -0.0619, 1.0357
+    bone.tail = -0.0493, -0.0981, 1.0489
+    bone.roll = 1.8568
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['eye.R']]
+    bones['eye_up.R'] = bone.name
+    bone = arm.edit_bones.new('eye_down.R')
+    bone.head = -0.0403, -0.0619, 1.0357
+    bone.tail = -0.0495, -0.0921, 1.0181
+    bone.roll = -2.1599
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['eye.R']]
+    bones['eye_down.R'] = bone.name
     bone = arm.edit_bones.new('hand.L')
-    bone.head = 0.3914, 0.0059, 0.7892
-    bone.tail = 0.4496, -0.0089, 0.7161
+    bone.head = 0.2874, 0.0043, 0.5794
+    bone.tail = 0.3301, -0.0066, 0.5257
     bone.roll = 2.4958
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['forearm.L']]
     bones['hand.L'] = bone.name
     bone = arm.edit_bones.new('hand.R')
-    bone.head = -0.3914, 0.0059, 0.7892
-    bone.tail = -0.4496, -0.0089, 0.7161
+    bone.head = -0.2874, 0.0043, 0.5794
+    bone.tail = -0.3301, -0.0066, 0.5257
     bone.roll = -2.4958
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['forearm.R']]
     bones['hand.R'] = bone.name
     bone = arm.edit_bones.new('f_index.01.L')
-    bone.head = 0.4423, -0.0410, 0.7360
-    bone.tail = 0.4592, -0.0466, 0.6972
-    bone.roll = -1.9262
+    bone.head = 0.3218, -0.0301, 0.5317
+    bone.tail = 0.3359, -0.0344, 0.5079
+    bone.roll = -2.0657
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.L']]
     bones['f_index.01.L'] = bone.name
     bone = arm.edit_bones.new('thumb.01.L')
-    bone.head = 0.3928, -0.0213, 0.7705
-    bone.tail = 0.3982, -0.0488, 0.7444
-    bone.roll = 0.1385
+    bone.head = 0.2886, -0.0144, 0.5637
+    bone.tail = 0.2914, -0.0344, 0.5439
+    bone.roll = 0.2413
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.L']]
     bones['thumb.01.L'] = bone.name
     bone = arm.edit_bones.new('f_middle.01.L')
-    bone.head = 0.4446, -0.0191, 0.7359
-    bone.tail = 0.4624, -0.0239, 0.6933
-    bone.roll = -1.8905
+    bone.head = 0.3239, -0.0148, 0.5320
+    bone.tail = 0.3382, -0.0179, 0.5052
+    bone.roll = -1.9924
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.L']]
     bones['f_middle.01.L'] = bone.name
     bone = arm.edit_bones.new('f_ring.01.L')
-    bone.head = 0.4416, 0.0036, 0.7328
-    bone.tail = 0.4591, 0.0000, 0.6950
-    bone.roll = -2.0660
+    bone.head = 0.3225, 0.0013, 0.5302
+    bone.tail = 0.3359, -0.0006, 0.5064
+    bone.roll = -2.1537
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.L']]
     bones['f_ring.01.L'] = bone.name
     bone = arm.edit_bones.new('f_pinky.01.L')
-    bone.head = 0.4336, 0.0253, 0.7333
-    bone.tail = 0.4489, 0.0239, 0.7068
-    bone.roll = -2.2708
+    bone.head = 0.3174, 0.0167, 0.5307
+    bone.tail = 0.3285, 0.0166, 0.5151
+    bone.roll = -2.3697
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.L']]
     bones['f_pinky.01.L'] = bone.name
     bone = arm.edit_bones.new('f_index.01.R')
-    bone.head = -0.4423, -0.0410, 0.7360
-    bone.tail = -0.4592, -0.0466, 0.6972
-    bone.roll = 1.9262
+    bone.head = -0.3218, -0.0301, 0.5317
+    bone.tail = -0.3359, -0.0344, 0.5079
+    bone.roll = 2.0657
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.R']]
     bones['f_index.01.R'] = bone.name
     bone = arm.edit_bones.new('thumb.01.R')
-    bone.head = -0.3928, -0.0213, 0.7705
-    bone.tail = -0.3982, -0.0488, 0.7444
-    bone.roll = -0.1385
+    bone.head = -0.2886, -0.0144, 0.5637
+    bone.tail = -0.2914, -0.0344, 0.5439
+    bone.roll = -0.2413
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.R']]
     bones['thumb.01.R'] = bone.name
     bone = arm.edit_bones.new('f_middle.01.R')
-    bone.head = -0.4446, -0.0191, 0.7359
-    bone.tail = -0.4624, -0.0239, 0.6933
-    bone.roll = 1.8905
+    bone.head = -0.3239, -0.0148, 0.5320
+    bone.tail = -0.3382, -0.0179, 0.5052
+    bone.roll = 1.9924
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.R']]
     bones['f_middle.01.R'] = bone.name
     bone = arm.edit_bones.new('f_ring.01.R')
-    bone.head = -0.4416, 0.0036, 0.7328
-    bone.tail = -0.4591, 0.0000, 0.6950
-    bone.roll = 2.0660
+    bone.head = -0.3225, 0.0013, 0.5302
+    bone.tail = -0.3359, -0.0006, 0.5064
+    bone.roll = 2.1537
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.R']]
     bones['f_ring.01.R'] = bone.name
     bone = arm.edit_bones.new('f_pinky.01.R')
-    bone.head = -0.4336, 0.0253, 0.7333
-    bone.tail = -0.4489, 0.0239, 0.7068
-    bone.roll = 2.2708
+    bone.head = -0.3174, 0.0167, 0.5307
+    bone.tail = -0.3285, 0.0166, 0.5151
+    bone.roll = 2.3697
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['hand.R']]
     bones['f_pinky.01.R'] = bone.name
     bone = arm.edit_bones.new('f_index.02.L')
-    bone.head = 0.4592, -0.0466, 0.6972
-    bone.tail = 0.4654, -0.0490, 0.6743
-    bone.roll = -1.7614
+    bone.head = 0.3359, -0.0344, 0.5079
+    bone.tail = 0.3411, -0.0364, 0.4911
+    bone.roll = -1.7895
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_index.01.L']]
     bones['f_index.02.L'] = bone.name
     bone = arm.edit_bones.new('thumb.02.L')
-    bone.head = 0.3982, -0.0488, 0.7444
-    bone.tail = 0.4065, -0.0659, 0.7162
-    bone.roll = -0.0043
+    bone.head = 0.2914, -0.0344, 0.5439
+    bone.tail = 0.2974, -0.0486, 0.5225
+    bone.roll = 0.0195
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['thumb.01.L']]
     bones['thumb.02.L'] = bone.name
     bone = arm.edit_bones.new('f_middle.02.L')
-    bone.head = 0.4624, -0.0239, 0.6933
-    bone.tail = 0.4716, -0.0268, 0.6638
-    bone.roll = -1.7847
+    bone.head = 0.3382, -0.0179, 0.5052
+    bone.tail = 0.3456, -0.0202, 0.4834
+    bone.roll = -1.8085
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_middle.01.L']]
     bones['f_middle.02.L'] = bone.name
     bone = arm.edit_bones.new('f_ring.02.L')
-    bone.head = 0.4591, 0.0000, 0.6950
-    bone.tail = 0.4670, -0.0022, 0.6715
-    bone.roll = -1.9459
+    bone.head = 0.3359, -0.0006, 0.5064
+    bone.tail = 0.3422, -0.0021, 0.4890
+    bone.roll = -1.9712
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_ring.01.L']]
     bones['f_ring.02.L'] = bone.name
     bone = arm.edit_bones.new('f_pinky.02.L')
-    bone.head = 0.4489, 0.0239, 0.7068
-    bone.tail = 0.4565, 0.0230, 0.6888
-    bone.roll = -2.1387
+    bone.head = 0.3285, 0.0166, 0.5151
+    bone.tail = 0.3346, 0.0164, 0.5018
+    bone.roll = -2.1600
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_pinky.01.L']]
     bones['f_pinky.02.L'] = bone.name
     bone = arm.edit_bones.new('f_index.02.R')
-    bone.head = -0.4592, -0.0466, 0.6972
-    bone.tail = -0.4654, -0.0490, 0.6743
-    bone.roll = 1.7614
+    bone.head = -0.3359, -0.0344, 0.5079
+    bone.tail = -0.3411, -0.0364, 0.4911
+    bone.roll = 1.7895
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_index.01.R']]
     bones['f_index.02.R'] = bone.name
     bone = arm.edit_bones.new('thumb.02.R')
-    bone.head = -0.3982, -0.0488, 0.7444
-    bone.tail = -0.4065, -0.0659, 0.7162
-    bone.roll = 0.0043
+    bone.head = -0.2914, -0.0344, 0.5439
+    bone.tail = -0.2974, -0.0486, 0.5225
+    bone.roll = -0.0195
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['thumb.01.R']]
     bones['thumb.02.R'] = bone.name
     bone = arm.edit_bones.new('f_middle.02.R')
-    bone.head = -0.4624, -0.0239, 0.6933
-    bone.tail = -0.4716, -0.0268, 0.6638
-    bone.roll = 1.7847
+    bone.head = -0.3382, -0.0179, 0.5052
+    bone.tail = -0.3456, -0.0202, 0.4834
+    bone.roll = 1.8085
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_middle.01.R']]
     bones['f_middle.02.R'] = bone.name
     bone = arm.edit_bones.new('f_ring.02.R')
-    bone.head = -0.4591, 0.0000, 0.6950
-    bone.tail = -0.4670, -0.0022, 0.6715
-    bone.roll = 1.9459
+    bone.head = -0.3359, -0.0006, 0.5064
+    bone.tail = -0.3422, -0.0021, 0.4890
+    bone.roll = 1.9712
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_ring.01.R']]
     bones['f_ring.02.R'] = bone.name
     bone = arm.edit_bones.new('f_pinky.02.R')
-    bone.head = -0.4489, 0.0239, 0.7068
-    bone.tail = -0.4565, 0.0230, 0.6888
-    bone.roll = 2.1387
+    bone.head = -0.3285, 0.0166, 0.5151
+    bone.tail = -0.3346, 0.0164, 0.5018
+    bone.roll = 2.1600
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_pinky.01.R']]
     bones['f_pinky.02.R'] = bone.name
     bone = arm.edit_bones.new('f_index.03.L')
-    bone.head = 0.4654, -0.0490, 0.6743
-    bone.tail = 0.4681, -0.0510, 0.6536
+    bone.head = 0.3411, -0.0364, 0.4911
+    bone.tail = 0.3431, -0.0379, 0.4759
     bone.roll = -1.6158
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_index.02.L']]
     bones['f_index.03.L'] = bone.name
     bone = arm.edit_bones.new('thumb.03.L')
-    bone.head = 0.4065, -0.0659, 0.7162
-    bone.tail = 0.4151, -0.0739, 0.6935
-    bone.roll = -0.1287
+    bone.head = 0.2974, -0.0486, 0.5225
+    bone.tail = 0.3038, -0.0539, 0.5058
+    bone.roll = -0.1371
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['thumb.02.L']]
     bones['thumb.03.L'] = bone.name
     bone = arm.edit_bones.new('f_middle.03.L')
-    bone.head = 0.4716, -0.0268, 0.6638
-    bone.tail = 0.4742, -0.0284, 0.6430
+    bone.head = 0.3456, -0.0202, 0.4834
+    bone.tail = 0.3475, -0.0213, 0.4681
     bone.roll = -1.5877
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_middle.02.L']]
     bones['f_middle.03.L'] = bone.name
     bone = arm.edit_bones.new('f_ring.03.L')
-    bone.head = 0.4670, -0.0022, 0.6715
-    bone.tail = 0.4698, -0.0040, 0.6529
+    bone.head = 0.3422, -0.0021, 0.4890
+    bone.tail = 0.3443, -0.0034, 0.4754
     bone.roll = -1.7601
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_ring.02.L']]
     bones['f_ring.03.L'] = bone.name
     bone = arm.edit_bones.new('f_pinky.03.L')
-    bone.head = 0.4565, 0.0230, 0.6888
-    bone.tail = 0.4612, 0.0220, 0.6704
+    bone.head = 0.3346, 0.0164, 0.5018
+    bone.tail = 0.3380, 0.0157, 0.4882
     bone.roll = -1.9776
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_pinky.02.L']]
     bones['f_pinky.03.L'] = bone.name
     bone = arm.edit_bones.new('f_index.03.R')
-    bone.head = -0.4654, -0.0490, 0.6743
-    bone.tail = -0.4681, -0.0510, 0.6536
+    bone.head = -0.3411, -0.0364, 0.4911
+    bone.tail = -0.3431, -0.0379, 0.4759
     bone.roll = 1.6158
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_index.02.R']]
     bones['f_index.03.R'] = bone.name
     bone = arm.edit_bones.new('thumb.03.R')
-    bone.head = -0.4065, -0.0659, 0.7162
-    bone.tail = -0.4151, -0.0739, 0.6935
-    bone.roll = 0.1287
+    bone.head = -0.2974, -0.0486, 0.5225
+    bone.tail = -0.3038, -0.0539, 0.5058
+    bone.roll = 0.1371
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['thumb.02.R']]
     bones['thumb.03.R'] = bone.name
     bone = arm.edit_bones.new('f_middle.03.R')
-    bone.head = -0.4716, -0.0268, 0.6638
-    bone.tail = -0.4742, -0.0284, 0.6430
+    bone.head = -0.3456, -0.0202, 0.4834
+    bone.tail = -0.3475, -0.0213, 0.4681
     bone.roll = 1.5877
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_middle.02.R']]
     bones['f_middle.03.R'] = bone.name
     bone = arm.edit_bones.new('f_ring.03.R')
-    bone.head = -0.4670, -0.0022, 0.6715
-    bone.tail = -0.4698, -0.0040, 0.6529
+    bone.head = -0.3422, -0.0021, 0.4890
+    bone.tail = -0.3443, -0.0034, 0.4754
     bone.roll = 1.7601
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_ring.02.R']]
     bones['f_ring.03.R'] = bone.name
     bone = arm.edit_bones.new('f_pinky.03.R')
-    bone.head = -0.4565, 0.0230, 0.6888
-    bone.tail = -0.4612, 0.0220, 0.6704
+    bone.head = -0.3346, 0.0164, 0.5018
+    bone.tail = -0.3380, 0.0157, 0.4882
     bone.roll = 1.9776
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['f_pinky.02.R']]
@@ -569,7 +541,7 @@ def create(obj):  # noqa
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Face', 'Face (Primary)', 'Face (Secondary)', 'Torso', 'Fingers', 'Arm.L (IK)', 'Arm.R (IK)', 'Leg.L (IK)', 'Leg.R (IK)')
+    assign_bone_collections(pbone, 'Face', 'Torso', 'Fingers', 'Arm.L (IK)', 'Arm.R (IK)', 'Leg.L (IK)', 'Leg.R (IK)')
     try:
         pbone.rigify_parameters.super_copy_widget_type = 'diamond'
     except AttributeError:
@@ -712,94 +684,6 @@ def create(obj):  # noqa
         pbone.rigify_parameters.make_control = True
     except AttributeError:
         pass
-    try:
-        pbone.rigify_parameters.pivot_master_widget_type = 'bone'
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['cloth.L']]
-    pbone.rigify_type = 'game.basic.my_simple_tenticle'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    assign_bone_collection_refs(pbone.rigify_parameters, 'tweak', 'Torso (Tweak)')
-    assign_bone_collection_refs(pbone.rigify_parameters, 'fk', 'Torso (Tweak)')
-    try:
-        pbone.rigify_parameters.pivot_pos = 1
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.enable_scale = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.roll_alignment = 'manual'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.copy_rotation_axes = (False, False, False)
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.tweak_layers_extra = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.separate_rotation = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.fk_widget = 'limb'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.create_tweaks = True
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['cloth.R']]
-    pbone.rigify_type = 'game.basic.my_simple_tenticle'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    assign_bone_collection_refs(pbone.rigify_parameters, 'tweak', 'Torso (Tweak)')
-    assign_bone_collection_refs(pbone.rigify_parameters, 'fk', 'Torso (Tweak)')
-    try:
-        pbone.rigify_parameters.pivot_pos = 1
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.enable_scale = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.roll_alignment = 'manual'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.copy_rotation_axes = (False, False, False)
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.tweak_layers_extra = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.separate_rotation = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.fk_widget = 'limb'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.create_tweaks = True
-    except AttributeError:
-        pass
     pbone = obj.pose.bones[bones['spine.003']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
@@ -836,22 +720,6 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['cloth.L.001']]
-    pbone.rigify_type = ''
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    pbone = obj.pose.bones[bones['cloth.R.001']]
-    pbone.rigify_type = ''
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
     pbone = obj.pose.bones[bones['neck.001']]
     pbone.rigify_type = 'game.spines.super_head'
     pbone.lock_location = (False, False, False)
@@ -1053,14 +921,14 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['eye.R']]
+    pbone = obj.pose.bones[bones['eye.L']]
     pbone.rigify_type = 'game.face.vizor_eye'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
+    assign_bone_collections(pbone, 'Face')
     try:
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
@@ -1073,14 +941,14 @@ def create(obj):  # noqa
         pbone.rigify_parameters.relink_constraints = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['eye.L']]
+    pbone = obj.pose.bones[bones['eye.R']]
     pbone.rigify_type = 'game.face.vizor_eye'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
+    assign_bone_collections(pbone, 'Face')
     try:
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
@@ -1141,42 +1009,6 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['eye_up.R']]
-    pbone.rigify_type = ''
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['eye_down.R']]
-    pbone.rigify_type = ''
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
-    try:
-        pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_widget = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
     pbone = obj.pose.bones[bones['eye_up.L']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
@@ -1184,7 +1016,7 @@ def create(obj):  # noqa
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
+    assign_bone_collections(pbone, 'Face')
     try:
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
@@ -1200,7 +1032,43 @@ def create(obj):  # noqa
     pbone.lock_rotation_w = False
     pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Torso')
+    assign_bone_collections(pbone, 'Face')
+    try:
+        pbone.rigify_parameters.enable_scale = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.make_widget = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.relink_constraints = True
+    except AttributeError:
+        pass
+    pbone = obj.pose.bones[bones['eye_up.R']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Face')
+    try:
+        pbone.rigify_parameters.enable_scale = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.relink_constraints = True
+    except AttributeError:
+        pass
+    pbone = obj.pose.bones[bones['eye_down.R']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Face')
     try:
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
@@ -1665,3 +1533,6 @@ def create(obj):  # noqa
 
     return bones
 
+
+if __name__ == "__main__":
+    create(bpy.context.active_object)
