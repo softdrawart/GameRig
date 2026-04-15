@@ -94,6 +94,7 @@ def create(obj):  # noqa
     add_bone_collection('Bag', ui_row=15)
     add_bone_collection('Glasses')
     add_bone_collection('Hat')
+    add_bone_collection('hair', ui_row=13)
 
     bones = {}
 
@@ -437,9 +438,9 @@ def create(obj):  # noqa
     bone.parent = arm.edit_bones[bones['head']]
     bones['beard'] = bone.name
     bone = arm.edit_bones.new('glasses')
-    bone.head = 0.0000, -0.1307, 1.3765
-    bone.tail = 0.0000, -0.1689, 1.3765
-    bone.roll = -0.0000
+    bone.head = 0.0000, -0.1362, 1.3754
+    bone.tail = 0.0001, -0.1362, 1.3992
+    bone.roll = 0.0036
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['head']]
     bones['glasses'] = bone.name
@@ -1866,7 +1867,7 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['glasses']]
-    pbone.rigify_type = 'game.basic.prop'
+    pbone.rigify_type = 'game.basic.pivot'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -1874,7 +1875,7 @@ def create(obj):  # noqa
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Glasses')
     try:
-        pbone.rigify_parameters.enable_scale = False
+        pbone.rigify_parameters.relink_constraints = True
     except AttributeError:
         pass
     try:
@@ -1890,7 +1891,7 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     try:
-        pbone.rigify_parameters.make_control = True
+        pbone.rigify_parameters.make_control = False
     except AttributeError:
         pass
     try:
@@ -1898,19 +1899,19 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     try:
-        pbone.rigify_parameters.make_controller = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_deformer = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.parents = 'ORG-hand.L, ORG-hand.R'
+        pbone.rigify_parameters.parents = ''
     except AttributeError:
         pass
     try:
         pbone.rigify_parameters.default_parent = 'ORG-head'
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.add_extra_parents = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.extra_parents = 'ORG-hand.R'
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['forearm.L']]
