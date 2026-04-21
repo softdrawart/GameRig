@@ -15,7 +15,8 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
         super().initialize()
         self.bbone_segments = 1
         self.leaf_hierarchy = self.params.leaf_hierarchy
-        self.parent_bones_names = self.build_list()
+        if self.params.add_extra_parents:
+            self.parent_bones_names = self.build_list()
 
     #forms a list of bone names from parameter
     def build_list(self):
@@ -36,7 +37,7 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
 
         pbuilder.build_child(
             self, ctrl.ik, prop_bone=master, select_parent='root',
-            prop_id='IK_parent', prop_name='IK Parent', controls=controls, extra_parents=self.parent_bones_names
+            prop_id='IK_parent', prop_name='IK Parent', controls=controls, extra_parents=self.parent_bones_names if hasattr(self, "parent_bones_names") else []
         )
 
         pbuilder.build_child(
