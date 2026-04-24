@@ -121,7 +121,7 @@ class BaseLimbRig(BoneUtilityMixin, old_BaseLimbRig):
             con = self.make_constraint(tweak, 'COPY_ROTATION', entry.org)
             controls = self.bones.ctrl.flatten() #all controllers will open parameters
             panel = self.generator.script.panel_with_selected_check(self, controls)
-            self.make_property(self.prop_bone, 'Tweak_Follow', default=1.0, description="Vizor Tweak Follow ORG Bone")
+            self.make_property(self.prop_bone, 'Tweak_Follow', default=0.0, description="Vizor Tweak Follow ORG Bone")
             panel.custom_prop(self.prop_bone, 'Tweak_Follow')
             self.make_driver(con, 'influence', variables={(self.prop_bone, 'Tweak_Follow')})
 
