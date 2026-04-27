@@ -161,6 +161,8 @@ class Rig(TweakChainRig, RelinkConstraintsMixin):
     @stage.parent_bones
     def parent_mch_control_bones(self):
         if self.separate_rotation and self.create_ctrl:
+            if self.params.relink_constraints:
+                self.relink_bone_parent(self.bones.mch.rot)
             self.set_bone_parent(self.bones.ctrl.fk[0], self.bones.mch.rot)
 
     @stage.parent_bones
@@ -182,6 +184,10 @@ class Rig(TweakChainRig, RelinkConstraintsMixin):
     def rig_bones(self):
         if self.separate_rotation:
             con = self.make_constraint(self.bones.mch.rot, 'COPY_ROTATION', 'root', use_xyz=self.separate_rotation_axes)
+            if self.params.relink_constraints:
+                org = self.bones.org[0]
+                self.relink_bone_constraints(org)
+                self.relink_move_constraints(org, self.bones.mch.rot, prefix='')
 
             if self.create_ctrl:
                 self.make_driver(con, 'influence',
@@ -191,12 +197,6 @@ class Rig(TweakChainRig, RelinkConstraintsMixin):
     #ORG bones RIG
     @stage.rig_bones
     def rig_org_chain(self):
-        if self.separate_rotation:
-            org = self.bones.org[0]
-            #if relink constraint
-            self.relink_bone_constraints(org)
-            self.relink_move_constraints(org, self.bones.mch.rot, prefix='')
-
         if self.create_tweaks:
             tweaks = self.bones.ctrl.tweak
             for args in zip(count(0), self.bones.org, tweaks, tweaks[1:]):
