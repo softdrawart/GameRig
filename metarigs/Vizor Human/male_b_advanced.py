@@ -1479,14 +1479,6 @@ def create(obj):  # noqa
         pbone.rigify_parameters.default_parent = 'ORG-head'
     except AttributeError:
         pass
-    try:
-        pbone.rigify_parameters.add_extra_parents = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.extra_parents = 'ORG-hand.R'
-    except AttributeError:
-        pass
     pbone = obj.pose.bones[bones['forearm.L']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)

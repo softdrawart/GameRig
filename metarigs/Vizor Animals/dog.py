@@ -1,7 +1,5 @@
 import bpy
 
-from rna_prop_ui import rna_idprop_ui_create
-
 from mathutils import Color
 
 
@@ -448,7 +446,7 @@ def create(obj):  # noqa
 
     bpy.ops.object.mode_set(mode='OBJECT')
     pbone = obj.pose.bones[bones['pelvis']]
-    pbone.rigify_type = 'vizor.spines.quadrupet_spine'
+    pbone.rigify_type = 'game.spines.quadrupet_spine'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -634,7 +632,7 @@ def create(obj):  # noqa
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Leg.R')
     pbone = obj.pose.bones[bones['shoulder.L']]
-    pbone.rigify_type = 'vizor.limbs.quadrupet_scapula'
+    pbone.rigify_type = 'game.limbs.quadrupet_scapula'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -671,7 +669,7 @@ def create(obj):  # noqa
         pass
     assign_bone_collection_refs(pbone.rigify_parameters, 'tweak', 'Head (tweaks)')
     pbone = obj.pose.bones[bones['shoulder.R']]
-    pbone.rigify_type = 'vizor.limbs.quadrupet_scapula'
+    pbone.rigify_type = 'game.limbs.quadrupet_scapula'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -733,7 +731,7 @@ def create(obj):  # noqa
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Head')
     pbone = obj.pose.bones[bones['neck_H']]
-    pbone.rigify_type = 'vizor.spines.quadrupet_neck_skin'
+    pbone.rigify_type = 'game.spines.quadrupet_neck_skin'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -871,7 +869,7 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['eye.L']]
-    pbone.rigify_type = 'vizor.face.basic_eye'
+    pbone.rigify_type = 'game.face.vizor_eye'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -891,7 +889,7 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['eye.R']]
-    pbone.rigify_type = 'vizor.face.basic_eye'
+    pbone.rigify_type = 'game.face.vizor_eye'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
