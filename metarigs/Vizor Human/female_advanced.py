@@ -1106,7 +1106,7 @@ def create(obj):  # noqa
     except AttributeError:
         pass
     try:
-        pbone.rigify_parameters.roll_alignment = 'automatic'
+        pbone.rigify_parameters.roll_alignment = 'manual'
     except AttributeError:
         pass
     try:
