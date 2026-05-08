@@ -1,5 +1,7 @@
 import bpy
 
+from rna_prop_ui import rna_idprop_ui_create
+
 from mathutils import Color
 
 
@@ -87,14 +89,40 @@ def create(obj):  # noqa
     add_bone_collection('Face', ui_row=1, color_set_id=6)
     add_bone_collection('Face (tweaks)', ui_row=2, color_set_id=4)
     add_bone_collection('Root', ui_row=18)
+    add_bone_collection('Torso', ui_row=3, color_set_id=3)
+    add_bone_collection('Torso (Tweak)', ui_row=4, color_set_id=4)
+    add_bone_collection('Fingers', ui_row=5, color_set_id=6)
+    add_bone_collection('Fingers (Detail)', ui_row=6, color_set_id=5)
+    add_bone_collection('Arm.L (IK)', ui_row=7, color_set_id=2)
+    add_bone_collection('Arm.L (FK)', ui_row=8, color_set_id=5)
+    add_bone_collection('Arm.L (Tweak)', ui_row=9, color_set_id=4)
+    add_bone_collection('Arm.R (IK)', ui_row=7, color_set_id=2)
+    add_bone_collection('Arm.R (FK)', ui_row=8, color_set_id=5)
+    add_bone_collection('Arm.R (Tweak)', ui_row=9, color_set_id=4)
+    add_bone_collection('Leg.L (IK)', ui_row=10, color_set_id=2)
+    add_bone_collection('Leg.L (FK)', ui_row=11, color_set_id=5)
+    add_bone_collection('Leg.L (Tweak)', ui_row=12, color_set_id=4)
+    add_bone_collection('Leg.R (IK)', ui_row=10, color_set_id=2)
+    add_bone_collection('Leg.R (FK)', ui_row=11, color_set_id=5)
+    add_bone_collection('Leg.R (Tweak)', ui_row=12, color_set_id=4)
+    add_bone_collection('hair', ui_row=13)
+    add_bone_collection('Skirt', ui_row=14)
+    add_bone_collection('Prop', ui_row=15)
 
     bones = {}
 
+    bone = arm.edit_bones.new('char_root')
+    bone.head = 0.0000, 0.0000, 0.0000
+    bone.tail = 0.0000, 0.1396, 0.0000
+    bone.roll = 0.0000
+    bone.use_connect = False
+    bones['char_root'] = bone.name
     bone = arm.edit_bones.new('pelvis')
     bone.head = 0.0000, 0.2717, 0.7471
     bone.tail = 0.0000, 0.0383, 0.7615
     bone.roll = 0.0000
     bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['char_root']]
     bones['pelvis'] = bone.name
     bone = arm.edit_bones.new('tail')
     bone.head = 0.0000, 0.3200, 0.7504
@@ -445,6 +473,26 @@ def create(obj):  # noqa
     bones['tongue3'] = bone.name
 
     bpy.ops.object.mode_set(mode='OBJECT')
+    pbone = obj.pose.bones[bones['char_root']]
+    pbone.rigify_type = 'game.basic.super_copy'
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    assign_bone_collections(pbone, 'Face', 'Torso', 'Fingers', 'Arm.L (IK)', 'Arm.R (IK)', 'Leg.L (IK)', 'Leg.R (IK)')
+    try:
+        pbone.rigify_parameters.super_copy_widget_type = 'diamond'
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.make_deform = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.enable_scale = True
+    except AttributeError:
+        pass
     pbone = obj.pose.bones[bones['pelvis']]
     pbone.rigify_type = 'game.spines.quadrupet_spine'
     pbone.lock_location = (False, False, False)

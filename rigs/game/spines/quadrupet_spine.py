@@ -22,9 +22,10 @@ from rigify.utils.misc import map_list
 from rigify.utils.switch_parent import SwitchParentBuilder
 
 from rigify.base_rig import stage, BaseRig
+from ....utils.bones import BoneUtilityMixin
 
 
-class Rig(BaseRig):
+class Rig(BaseRig, BoneUtilityMixin):
     """
     Simplified Spine rig for quadrupets of 3 bones!
     """
@@ -48,6 +49,7 @@ class Rig(BaseRig):
     
     def parent_bones(self):
         self.rig_parent_bone = self.get_bone_parent(self.bones.org[0])
+        self.clean_def_hierarchy(self.bones.deform[0])
     ####################################################
     # BONES
 
