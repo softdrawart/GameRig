@@ -139,13 +139,13 @@ def create(obj):  # noqa
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine']]
     bones['toolBone'] = bone.name
-    bone = arm.edit_bones.new('CTRL_bag')
+    bone = arm.edit_bones.new('bag')
     bone.head = 0.2345, -0.0491, 0.7797
     bone.tail = 0.2771, -0.0491, 0.5287
     bone.roll = -0.1682
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine']]
-    bones['CTRL_bag'] = bone.name
+    bones['bag'] = bone.name
     bone = arm.edit_bones.new('Cloth.L')
     bone.head = 0.1134, -0.1287, 0.7145
     bone.tail = 0.1523, -0.1365, 0.4347
@@ -195,20 +195,6 @@ def create(obj):  # noqa
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['thigh.R']]
     bones['shin.R'] = bone.name
-    bone = arm.edit_bones.new('MCH-bag.001')
-    bone.head = 0.2342, -0.1861, 0.7832
-    bone.tail = 0.2342, -0.1861, 0.7244
-    bone.roll = 1.6151
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['CTRL_bag']]
-    bones['MCH-bag.001'] = bone.name
-    bone = arm.edit_bones.new('MCH-bag.002')
-    bone.head = 0.2336, 0.0863, 0.7838
-    bone.tail = 0.2336, 0.0863, 0.7250
-    bone.roll = 1.5982
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['CTRL_bag']]
-    bones['MCH-bag.002'] = bone.name
     bone = arm.edit_bones.new('Cloth.L.002')
     bone.head = 0.1523, -0.1365, 0.4347
     bone.tail = 0.1992, -0.1459, 0.0978
@@ -370,34 +356,20 @@ def create(obj):  # noqa
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['upper_arm.L']]
     bones['forearm.L'] = bone.name
-    bone = arm.edit_bones.new('DEF-bag_front')
+    bone = arm.edit_bones.new('bag_front')
     bone.head = 0.2002, -0.0814, 1.1054
     bone.tail = 0.2342, -0.1861, 0.7832
     bone.roll = 1.4928
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['bag_top']]
-    bones['DEF-bag_front'] = bone.name
-    bone = arm.edit_bones.new('DEF-bag_back')
+    bones['bag_front'] = bone.name
+    bone = arm.edit_bones.new('bag_back')
     bone.head = 0.1808, 0.1335, 1.0836
     bone.tail = 0.2336, 0.0863, 0.7838
     bone.roll = 1.4071
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['bag_top']]
-    bones['DEF-bag_back'] = bone.name
-    bone = arm.edit_bones.new('MCH-bag_front')
-    bone.head = 0.2002, -0.0814, 1.1054
-    bone.tail = 0.2294, -0.0814, 1.1054
-    bone.roll = 1.4928
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['bag_top']]
-    bones['MCH-bag_front'] = bone.name
-    bone = arm.edit_bones.new('MCH-bag_back')
-    bone.head = 0.1808, 0.1335, 1.0836
-    bone.tail = 0.2072, 0.1335, 1.0836
-    bone.roll = 1.4071
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['bag_top']]
-    bones['MCH-bag_back'] = bone.name
+    bones['bag_back'] = bone.name
     bone = arm.edit_bones.new('forearm.R')
     bone.head = -0.3276, 0.0304, 0.9448
     bone.tail = -0.4481, 0.0059, 0.7971
@@ -842,7 +814,7 @@ def create(obj):  # noqa
         pbone.rigify_parameters.pivot_master_widget_type = 'bone'
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['CTRL_bag']]
+    pbone = obj.pose.bones[bones['bag']]
     pbone.rigify_type = 'game.basic.super_copy'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
@@ -1056,30 +1028,6 @@ def create(obj):  # noqa
     assign_bone_collections(pbone, 'Leg.R (IK)')
     try:
         pbone.rigify_parameters.enable_scale = True
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['MCH-bag.001']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'cube'
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['MCH-bag.002']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'cube'
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['Cloth.L.002']]
@@ -1499,8 +1447,8 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['DEF-bag_front']]
-    pbone.rigify_type = 'game.basic.raw_copy'
+    pbone = obj.pose.bones[bones['bag_front']]
+    pbone.rigify_type = 'game.basic.stretch_chain'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -1515,36 +1463,12 @@ def create(obj):  # noqa
         pbone.rigify_parameters.relink_constraints = True
     except AttributeError:
         pass
-    con = pbone.constraints.new('COPY_LOCATION')
-    con.name = 'Copy Location'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'MCH-bag_front'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.use_offset = False
-    con = pbone.constraints.new('STRETCH_TO')
-    con.name = 'Stretch To'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'MCH-bag.001'
-    con.volume = 'NO_VOLUME'
-    con.keep_axis = 'SWING_Y'
-    con.rest_length = 0.32962796092033386
-    con.bulge = 1.0
-    con.use_bulge_min = False
-    con.use_bulge_max = False
-    con.bulge_min = 1.0
-    con.bulge_max = 1.0
-    con.bulge_smooth = 0.0
-    pbone = obj.pose.bones[bones['DEF-bag_back']]
-    pbone.rigify_type = 'game.basic.raw_copy'
+    try:
+        pbone.rigify_parameters.tail_tweak_parent = 'bag'
+    except AttributeError:
+        pass
+    pbone = obj.pose.bones[bones['bag_back']]
+    pbone.rigify_type = 'game.basic.stretch_chain'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
@@ -1563,68 +1487,8 @@ def create(obj):  # noqa
         pbone.rigify_parameters.parent_bone = ''
     except AttributeError:
         pass
-    con = pbone.constraints.new('COPY_LOCATION')
-    con.name = 'Copy Location'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'MCH-bag_back'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.use_offset = False
-    con = pbone.constraints.new('STRETCH_TO')
-    con.name = 'Stretch To'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'MCH-bag.002'
-    con.volume = 'NO_VOLUME'
-    con.keep_axis = 'SWING_Y'
-    con.rest_length = 0.29832595586776733
-    con.bulge = 1.0
-    con.use_bulge_min = False
-    con.use_bulge_max = False
-    con.bulge_min = 1.0
-    con.bulge_max = 1.0
-    con.bulge_smooth = 0.0
-    pbone = obj.pose.bones[bones['MCH-bag_front']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
     try:
-        pbone.rigify_parameters.super_copy_widget_type = 'bone'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = False
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['MCH-bag_back']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.super_copy_widget_type = 'bone'
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.relink_constraints = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.parent_bone = ''
+        pbone.rigify_parameters.tail_tweak_parent = 'bag'
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['forearm.R']]
