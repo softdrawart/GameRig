@@ -241,14 +241,14 @@ def create(obj):  # noqa
     bone = arm.edit_bones.new('eye.L')
     bone.head = 0.0403, -0.0619, 1.0357
     bone.tail = 0.0403, -0.0961, 1.0357
-    bone.roll = 3.1415
+    bone.roll = 0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['head']]
     bones['eye.L'] = bone.name
     bone = arm.edit_bones.new('eye.R')
     bone.head = -0.0403, -0.0619, 1.0357
     bone.tail = -0.0403, -0.0961, 1.0357
-    bone.roll = -3.1415
+    bone.roll = -0.0000
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['head']]
     bones['eye.R'] = bone.name
