@@ -41,7 +41,7 @@ class Rig(TweakChainRig, RelinkConstraintsMixin):
 
     def initialize(self):
         super().initialize()
-        self.enable_scale = self.params.enable_scale
+        self.enable_scale = False
         self.copy_rotation_axes = self.params.copy_rotation_axes
         self.separate_rotation = self.params.separate_rotation
         self.separate_rotation_axes = self.params.separate_rotation_axes
@@ -253,11 +253,7 @@ class Rig(TweakChainRig, RelinkConstraintsMixin):
         )
 
         cls.add_relink_constraints_params(params)
-        params.enable_scale = bpy.props.BoolProperty(
-            name="Scale",
-            default=True,
-            description="Deformation bones will inherit the scale of their ORG bones. Enable this only if you know what you are doing because scale can break your rig in the game engine"
-        )
+        
     @classmethod
     def parameters_ui(cls, layout, params):
         """ Create the ui for the rig parameters.

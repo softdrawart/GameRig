@@ -10,7 +10,7 @@ class Rig(SimpleChainRig, old_super_finger):
 
         """ Gather and validate data about the rig.
         """
-        self.enable_scale = self.params.enable_scale
+        self.enable_scale = False
     
 
     def rig_deform_bone(self, i, deform, org):
@@ -26,11 +26,7 @@ class Rig(SimpleChainRig, old_super_finger):
             RigifyParameters PropertyGroup
         """
         super().add_parameters(params)
-        params.enable_scale = bpy.props.BoolProperty(
-            name="Scale",
-            default=True,
-            description="Deformation bones will inherit the scale of their ORG bones. Enable this only if you know what you are doing because scale can break your rig in the game engine"
-        )
+        
 
     @classmethod
     def parameters_ui(self, layout, params):
@@ -39,7 +35,6 @@ class Rig(SimpleChainRig, old_super_finger):
         super().parameters_ui(layout, params)
 
         r = layout.row()
-        r.prop(params, "enable_scale")
 
 
 

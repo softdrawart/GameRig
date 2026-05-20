@@ -20,7 +20,7 @@ class Rig(SimpleChainRig, copy_chain):
 
         """ Gather and validate data about the rig.
         """
-        self.enable_scale = self.params.enable_scale
+        self.enable_scale = False
 
     ##############################
     # Control chain
@@ -57,11 +57,7 @@ class Rig(SimpleChainRig, copy_chain):
             RigifyParameters PropertyGroup
         """
         super().add_parameters(params)
-        params.enable_scale = bpy.props.BoolProperty(
-            name="Scale",
-            default=True,
-            description="Deformation bones will inherit the scale of their ORG bones. Enable this only if you know what you are doing because scale can break your rig in the game engine"
-        )
+        
 
         params.copy_chain_widget_type = bpy.props.StringProperty(
             name        = "Widget Type",
