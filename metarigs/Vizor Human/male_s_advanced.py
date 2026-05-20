@@ -110,18 +110,6 @@ def create(obj):  # noqa
     bone.roll = -0.0000
     bone.use_connect = False
     bones['toolBone_extra'] = bone.name
-    bone = arm.edit_bones.new('MCH-lace.004')
-    bone.head = 0.0484, -0.1392, 0.8935
-    bone.tail = 0.0380, -0.1399, 0.9080
-    bone.roll = -0.5747
-    bone.use_connect = False
-    bones['MCH-lace.004'] = bone.name
-    bone = arm.edit_bones.new('MCH-lace.005')
-    bone.head = 0.0349, 0.0558, 0.9147
-    bone.tail = 0.0255, 0.0579, 0.9294
-    bone.roll = -0.5680
-    bone.use_connect = False
-    bones['MCH-lace.005'] = bone.name
     bone = arm.edit_bones.new('spine')
     bone.head = 0.0000, -0.0263, 0.6942
     bone.tail = 0.0000, -0.0263, 0.8076
@@ -129,20 +117,6 @@ def create(obj):  # noqa
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['char_root']]
     bones['spine'] = bone.name
-    bone = arm.edit_bones.new('lace.006')
-    bone.head = 0.0484, -0.1392, 0.8935
-    bone.tail = 0.0295, -0.1404, 0.9198
-    bone.roll = -0.5747
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['MCH-lace.004']]
-    bones['lace.006'] = bone.name
-    bone = arm.edit_bones.new('lace.007')
-    bone.head = 0.0349, 0.0558, 0.9147
-    bone.tail = 0.0177, 0.0597, 0.9413
-    bone.roll = -0.5680
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['MCH-lace.005']]
-    bones['lace.007'] = bone.name
     bone = arm.edit_bones.new('spine.001')
     bone.head = 0.0000, -0.0263, 0.8076
     bone.tail = 0.0000, -0.0253, 0.9827
@@ -227,20 +201,20 @@ def create(obj):  # noqa
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['thigh.R']]
     bones['shin.R'] = bone.name
-    bone = arm.edit_bones.new('MCH-lace.002')
+    bone = arm.edit_bones.new('lace.004')
     bone.head = 0.1399, -0.1339, 0.7669
-    bone.tail = 0.1204, -0.1351, 0.7939
+    bone.tail = -0.0430, -0.1446, 1.0201
     bone.roll = -0.5747
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['bag']]
-    bones['MCH-lace.002'] = bone.name
-    bone = arm.edit_bones.new('MCH-lace.003')
+    bones['lace.004'] = bone.name
+    bone = arm.edit_bones.new('lace.005')
     bone.head = 0.1286, 0.0349, 0.7704
-    bone.tail = 0.1109, 0.0388, 0.7976
+    bone.tail = -0.0587, 0.0767, 1.0591
     bone.roll = -0.5680
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['bag']]
-    bones['MCH-lace.003'] = bone.name
+    bones['lace.005'] = bone.name
     bone = arm.edit_bones.new('neck.001')
     bone.head = -0.0000, 0.0038, 1.1627
     bone.tail = 0.0000, -0.0020, 1.2812
@@ -262,20 +236,6 @@ def create(obj):  # noqa
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['spine.003']]
     bones['shoulder.R'] = bone.name
-    bone = arm.edit_bones.new('MCH-lace')
-    bone.head = -0.0430, -0.1446, 1.0201
-    bone.tail = -0.0731, -0.1463, 1.0617
-    bone.roll = -0.5747
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['spine.003']]
-    bones['MCH-lace'] = bone.name
-    bone = arm.edit_bones.new('MCH-lace.001')
-    bone.head = -0.0587, 0.0767, 1.0591
-    bone.tail = -0.0860, 0.0829, 1.1012
-    bone.roll = -0.5680
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['spine.003']]
-    bones['MCH-lace.001'] = bone.name
     bone = arm.edit_bones.new('Cloth.L.002')
     bone.head = 0.1523, -0.1365, 0.4347
     bone.tail = 0.1992, -0.1459, 0.0978
@@ -318,34 +278,6 @@ def create(obj):  # noqa
     bone.use_connect = True
     bone.parent = arm.edit_bones[bones['shin.R']]
     bones['foot.R'] = bone.name
-    bone = arm.edit_bones.new('lace')
-    bone.head = 0.1399, -0.1339, 0.7669
-    bone.tail = 0.1084, -0.1357, 0.8105
-    bone.roll = -0.5747
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['MCH-lace.002']]
-    bones['lace'] = bone.name
-    bone = arm.edit_bones.new('MCH-STR-lace.004')
-    bone.head = 0.1399, -0.1339, 0.7669
-    bone.tail = -0.0430, -0.1446, 1.0201
-    bone.roll = -0.5747
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['MCH-lace.002']]
-    bones['MCH-STR-lace.004'] = bone.name
-    bone = arm.edit_bones.new('lace.001')
-    bone.head = 0.1286, 0.0349, 0.7704
-    bone.tail = 0.1036, 0.0405, 0.8089
-    bone.roll = -0.5680
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['MCH-lace.003']]
-    bones['lace.001'] = bone.name
-    bone = arm.edit_bones.new('MCH-STR-lace.005')
-    bone.head = 0.1286, 0.0349, 0.7704
-    bone.tail = -0.0587, 0.0767, 1.0591
-    bone.roll = -0.5680
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['MCH-lace.003']]
-    bones['MCH-STR-lace.005'] = bone.name
     bone = arm.edit_bones.new('head')
     bone.head = 0.0000, -0.0020, 1.2812
     bone.tail = 0.0000, -0.0015, 1.5185
@@ -395,20 +327,6 @@ def create(obj):  # noqa
     bone.use_connect = False
     bone.parent = arm.edit_bones[bones['foot.R']]
     bones['heel.02.R'] = bone.name
-    bone = arm.edit_bones.new('lace.002')
-    bone.head = 0.0484, -0.1392, 0.8935
-    bone.tail = 0.0170, -0.1411, 0.9370
-    bone.roll = -0.5747
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['lace']]
-    bones['lace.002'] = bone.name
-    bone = arm.edit_bones.new('lace.003')
-    bone.head = 0.0349, 0.0558, 0.9147
-    bone.tail = 0.0099, 0.0614, 0.9533
-    bone.roll = -0.5680
-    bone.use_connect = False
-    bone.parent = arm.edit_bones[bones['lace.001']]
-    bones['lace.003'] = bone.name
     bone = arm.edit_bones.new('eye.L')
     bone.head = 0.0464, -0.0804, 1.3793
     bone.tail = 0.0464, -0.1079, 1.3793
@@ -805,70 +723,6 @@ def create(obj):  # noqa
         pbone.rigify_parameters.make_deform = False
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['MCH-lace.004']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (True, True, True)
-    pbone.lock_rotation = (True, True, True)
-    pbone.lock_rotation_w = True
-    pbone.lock_scale = (True, True, True)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('ARMATURE')
-    con.name = 'Armature'
-    tgt = con.targets.new()
-    tgt.target = obj
-    tgt.subtarget = 'MCH-STR-lace.004'
-    tgt.weight = 1.000
-    con.use_deform_preserve_volume = False
-    con.use_bone_envelopes = False
-    con.use_current_location = False
-    con = pbone.constraints.new('COPY_SCALE')
-    con.name = 'Copy Scale'
-    con.target = None
-    con.subtarget = 'char_root'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.power = 1.0
-    con.use_make_uniform = False
-    con.use_offset = False
-    con.use_add = False
-    pbone = obj.pose.bones[bones['MCH-lace.005']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('ARMATURE')
-    con.name = 'Armature'
-    tgt = con.targets.new()
-    tgt.target = obj
-    tgt.subtarget = 'MCH-STR-lace.005'
-    tgt.weight = 1.000
-    con.use_deform_preserve_volume = False
-    con.use_bone_envelopes = False
-    con.use_current_location = False
-    con = pbone.constraints.new('COPY_SCALE')
-    con.name = 'Copy Scale'
-    con.target = None
-    con.subtarget = 'char_root'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.power = 1.0
-    con.use_make_uniform = False
-    con.use_offset = False
-    con.use_add = False
     pbone = obj.pose.bones[bones['spine']]
     pbone.rigify_type = 'game.spines.basic_spine'
     pbone.lock_location = (False, False, False)
@@ -885,38 +739,6 @@ def create(obj):  # noqa
         pass
     try:
         pbone.rigify_parameters.enable_scale = False
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['lace.006']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'sphere'
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['lace.007']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.optional_widget_type = 'sphere'
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['spine.001']]
@@ -1227,28 +1049,56 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['MCH-lace.002']]
-    pbone.rigify_type = 'game.basic.raw_copy'
+    pbone = obj.pose.bones[bones['lace.004']]
+    pbone.rigify_type = 'game.basic.stretch_chain'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
-    pbone.lock_scale = (True, True, True)
+    pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Bag')
     try:
         pbone.rigify_parameters.relink_constraints = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['MCH-lace.003']]
-    pbone.rigify_type = 'game.basic.raw_copy'
+    try:
+        pbone.rigify_parameters.bbones = 1
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.skin_chain_falloff_twist = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.tail_tweak_parent = 'spine_fk.003'
+    except AttributeError:
+        pass
+    pbone = obj.pose.bones[bones['lace.005']]
+    pbone.rigify_type = 'game.basic.stretch_chain'
     pbone.lock_location = (False, False, False)
     pbone.lock_rotation = (False, False, False)
     pbone.lock_rotation_w = False
-    pbone.lock_scale = (True, True, True)
+    pbone.lock_scale = (False, False, False)
     pbone.rotation_mode = 'QUATERNION'
     assign_bone_collections(pbone, 'Bag')
     try:
         pbone.rigify_parameters.relink_constraints = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.skin_chain_use_scale = (False, False, False, False)
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.bbones = 1
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.skin_chain_falloff_twist = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.tail_tweak_parent = 'spine_fk.003'
     except AttributeError:
         pass
     pbone = obj.pose.bones[bones['neck.001']]
@@ -1308,30 +1158,6 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['MCH-lace']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (True, True, True)
-    pbone.lock_rotation_w = True
-    pbone.lock_scale = (True, True, True)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    pbone = obj.pose.bones[bones['MCH-lace.001']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (True, True, True)
-    pbone.lock_rotation_w = True
-    pbone.lock_scale = (True, True, True)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
     pbone = obj.pose.bones[bones['Cloth.L.002']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
@@ -1388,154 +1214,6 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['lace']]
-    pbone.rigify_type = 'game.basic.super_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.bbones = 1
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.skin_chain_falloff_twist = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_control = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.enable_scale = False
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('DAMPED_TRACK')
-    con.name = 'Damped Track'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'lace.006'
-    con.track_axis = 'TRACK_Y'
-    pbone = obj.pose.bones[bones['MCH-STR-lace.004']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.bbones = 1
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.skin_chain_falloff_twist = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('STRETCH_TO')
-    con.name = 'Stretch To'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'MCH-lace'
-    con.volume = 'NO_VOLUME'
-    con.keep_axis = 'SWING_Y'
-    con.rest_length = 0.3124538064002991
-    con.bulge = 1.0
-    con.use_bulge_min = False
-    con.use_bulge_max = False
-    con.bulge_min = 1.0
-    con.bulge_max = 1.0
-    con.bulge_smooth = 0.0
-    pbone = obj.pose.bones[bones['lace.001']]
-    pbone.rigify_type = 'game.basic.super_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.skin_chain_use_scale = (False, False, False, False)
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.bbones = 1
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.skin_chain_falloff_twist = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_control = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.enable_scale = False
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('DAMPED_TRACK')
-    con.name = 'Damped Track'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'lace.007'
-    con.track_axis = 'TRACK_Y'
-    pbone = obj.pose.bones[bones['MCH-STR-lace.005']]
-    pbone.rigify_type = 'game.basic.raw_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.skin_chain_use_scale = (False, False, False, False)
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.bbones = 1
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.skin_chain_falloff_twist = True
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('STRETCH_TO')
-    con.name = 'Stretch To'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'MCH-lace.001'
-    con.volume = 'NO_VOLUME'
-    con.keep_axis = 'SWING_Y'
-    con.rest_length = 0.346731573343277
-    con.bulge = 1.0
-    con.use_bulge_min = False
-    con.use_bulge_max = False
-    con.bulge_min = 1.0
-    con.bulge_max = 1.0
-    con.bulge_smooth = 0.0
     pbone = obj.pose.bones[bones['head']]
     pbone.rigify_type = ''
     pbone.lock_location = (False, False, False)
@@ -1656,124 +1334,6 @@ def create(obj):  # noqa
         pbone.rigify_parameters.enable_scale = True
     except AttributeError:
         pass
-    pbone = obj.pose.bones[bones['lace.002']]
-    pbone.rigify_type = 'game.basic.super_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.parent_bone = ''
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_control = False
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('COPY_LOCATION')
-    con.name = 'Copy Location'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'lace.006'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.use_offset = False
-    con = pbone.constraints.new('COPY_ROTATION')
-    con.name = 'Copy Rotation'
-    con.target = obj
-    con.subtarget = 'lace.006'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.euler_order = 'AUTO'
-    con.mix_mode = 'REPLACE'
-    con.use_offset = False
-    con = pbone.constraints.new('COPY_SCALE')
-    con.name = 'Copy Scale'
-    con.target = obj
-    con.subtarget = 'lace.006'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.power = 1.0
-    con.use_make_uniform = False
-    con.use_offset = False
-    con.use_add = False
-    pbone = obj.pose.bones[bones['lace.003']]
-    pbone.rigify_type = 'game.basic.super_copy'
-    pbone.lock_location = (False, False, False)
-    pbone.lock_rotation = (False, False, False)
-    pbone.lock_rotation_w = False
-    pbone.lock_scale = (False, False, False)
-    pbone.rotation_mode = 'QUATERNION'
-    assign_bone_collections(pbone, 'Bag')
-    try:
-        pbone.rigify_parameters.relink_constraints = True
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.parent_bone = ''
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.make_control = False
-    except AttributeError:
-        pass
-    try:
-        pbone.rigify_parameters.enable_scale = False
-    except AttributeError:
-        pass
-    con = pbone.constraints.new('COPY_LOCATION')
-    con.name = 'Copy Location'
-    con.target = obj
-    con.head_tail = 0.0
-    con.use_bbone_shape = False
-    con.subtarget = 'lace.007'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.use_offset = False
-    con = pbone.constraints.new('COPY_ROTATION')
-    con.name = 'Copy Rotation'
-    con.target = obj
-    con.subtarget = 'lace.007'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.invert_x = False
-    con.invert_y = False
-    con.invert_z = False
-    con.euler_order = 'AUTO'
-    con.mix_mode = 'REPLACE'
-    con.use_offset = False
-    con = pbone.constraints.new('COPY_SCALE')
-    con.name = 'Copy Scale'
-    con.target = obj
-    con.subtarget = 'lace.007'
-    con.use_x = True
-    con.use_y = True
-    con.use_z = True
-    con.power = 1.0
-    con.use_make_uniform = False
-    con.use_offset = False
-    con.use_add = False
     pbone = obj.pose.bones[bones['eye.L']]
     pbone.rigify_type = 'game.face.vizor_eye'
     pbone.lock_location = (False, False, False)
