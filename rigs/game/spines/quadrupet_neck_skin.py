@@ -37,8 +37,8 @@ class Rig(BaseRig):
     class MchBones(BaseRig.MchBones):
         tip: list[str]
         main: list[str]
-        mid: str
-        direction: str
+        mid: list[str]  # Changed to list to support multiple middle bones
+        direction: list[str] # Changed to list
 
     class CtrlBones(BaseRig.CtrlBones):
         tip: list[str]
@@ -61,137 +61,200 @@ class Rig(BaseRig):
         return [bone.name] + siblings
         
     def initialize(self):
+        #test
+        print(f"initialise: bone {self.bones.org[1]} position {self.get_bone(self.bones.org[1]).tail}")
         org = self.bones.org
         if not isinstance(self.rigify_parent, HeadRig):
             self.raise_error('Parent rig of the {} must be Super Head Rig Type', org[0])
         parent_org = self.rigify_parent.bones.org
-        required_bone_amount = 3 #len(parent_org) later change for dinamic rig
-        if len(org) != required_bone_amount:
-            self.raise_error('Amount of bones for {} must {}', org[0], required_bone_amount)
-        for org, parent_org in zip(org, parent_org):
-            if not is_same_position(self.obj, org, parent_org):
-                self.raise_error('Bone {} and {} should be in the same position', org, parent_org)
+        
+        # Now requires at least 2 bones
+        if len(org) < 2:
+            self.raise_error('Amount of bones for {} must be at least 2', org[0])
+            
+        for org_bone, parent_org_bone in zip(org, parent_org):
+            if not is_same_position(self.obj, org_bone, parent_org_bone):
+                self.raise_error('Bone {} and {} should be in the same position', org_bone, parent_org_bone)
+
     def prepare_bones(self):
-        #set second bone to midle position
-        ed1 = self.get_bone(self.bones.org[0]).tail
-        ed2 = self.get_bone(self.bones.org[2]).tail
-        mid_pos = (ed1 + ed2)/2
-        self.get_bone(self.bones.org[1]).tail = mid_pos
         #parent org bones temporary
         parent_org = self.rigify_parent.bones.org
-        for org, parent_org in zip(self.bones.org, parent_org):
-            self.set_bone_parent(org, parent_org)
+        for org_bone, parent_org_bone in zip(self.bones.org, parent_org):
+            self.set_bone_parent(org_bone, parent_org_bone)
 
     def parent_bones(self):
         self.rig_parent_bone = parent = self.get_bone_parent(self.bones.org[0])
-        self.rig_parent_parent_bone = self.get_bone_parent(parent) #either none or other rig parent bone
+        self.rig_parent_parent_bone = self.get_bone_parent(parent) 
         #parent org bones temporary
         parent_org = self.rigify_parent.bones.deform
-        for org, parent_org in zip(self.bones.org, parent_org):
-            self.set_bone_parent(org, parent_org)
+        for org_bone, parent_org_bone in zip(self.bones.org, parent_org):
+            self.set_bone_parent(org_bone, parent_org_bone)
         
     ##############################
     # Tip bones MCH and CTRL
     @stage.generate_bones
     def make_tip_controls(self):
         self.bones.ctrl.tip = map_list(self.make_tip_contorol, self.bones.org)
+
     def make_tip_contorol(self, org:str):
-        #copy and place at tail
         bone = self.copy_bone(org, make_derived_name(org, 'ctrl', '_tip'), scale=0.2)
         pos = self.get_bone(org).tail
         put_bone(self.obj, bone, pos)
         return bone
+
     @stage.generate_bones
     def make_tip_mchs(self):
         self.bones.mch.tip = map_list(self.make_tip_mch, self.bones.ctrl.tip, self.rigify_parent.bones.org)
-        mid_ctrl = self.bones.ctrl.tip[1]
-        self.bones.mch.mid = self.copy_bone(mid_ctrl, make_derived_name(mid_ctrl, 'mch', '_mid'), parent=True, scale=.5)
+        
+        self.bones.mch.mid = []
+        if len(self.bones.org) > 2:
+            for i in range(1, len(self.bones.ctrl.tip) - 1):
+                mid_ctrl = self.bones.ctrl.tip[i]
+                mid_mch = self.copy_bone(mid_ctrl, make_derived_name(mid_ctrl, 'mch', '_mid'), parent=True, scale=.5)
+                self.bones.mch.mid.append(mid_mch)
+
     def make_tip_mch(self, ctrl:str, align_bone:str):
-        #copy and place at tail
         bone = self.copy_bone(ctrl, make_derived_name(ctrl, 'mch'), scale=1.2)
         align_bone_orientation(self.obj, bone, align_bone)
         return bone
+
     @stage.parent_bones
     def parent_tip_controlers(self):
         for i, ctrl, mch in zip(count(0), self.bones.ctrl.tip, self.bones.mch.tip):
             self.set_bone_parent(ctrl, mch)
+
     @stage.parent_bones
     def parent_tip_mch(self):
-        mch = self.bones.mch.tip
-        parent = self.rigify_parent.bones.ctrl
-        self.set_bone_parent(mch[0], self.rig_parent_parent_bone)
-        self.set_bone_parent(mch[-2], parent.neck)
-        self.set_bone_parent(mch[-1], parent.head)
+            mch = self.bones.mch.tip
+            parent = self.rigify_parent.bones.ctrl
+            
+            # 1. Parent the first bone
+            self.set_bone_parent(mch[0], self.rig_parent_parent_bone)
+            
+            # 2. Parent the last bone
+            self.set_bone_parent(mch[-1], parent.head)
+            
+            # 3. Only parent the second-to-last bone to 'neck' if it's NOT the first bone
+            if len(mch) > 2:
+                self.set_bone_parent(mch[-2], parent.neck)
+
     @stage.rig_bones
     def rig_tip_mch_bones(self):
+
+        def find_distance(a:str, b:str):
+            pos_a = self.get_bone(a).head
+            pos_b = self.get_bone(b).head
+            return (pos_b - pos_a).length   
+
         mch = self.bones.mch.tip
-        mid = self.bones.mch.mid
         ctrl = self.bones.ctrl.tip
         parent_org = self.rigify_parent.bones.org
+        
+        # First bone transform
         co = self.make_constraint(mch[0], 'TRANSFORM', parent_org[0], space='LOCAL', map_from='ROTATION', map_to='LOCATION')
         co.from_max_x_rot = radians(150)
         co.to_max_y = -.35
         co.to_max_z = -.09
         co.map_to_y_from = 'X'
         co.map_to_z_from = 'X'
+        co = self.make_constraint(mch[0], 'LIMIT_DISTANCE', parent_org[0], distance=find_distance(mch[0], parent_org[0]),
+                        limit_mode='LIMITDIST_OUTSIDE', use_transform_limit=True,)
 
-        co = self.make_constraint(mch[2], 'TRANSFORM', parent_org[2], space='LOCAL', map_from='ROTATION', map_to='LOCATION')
+        # Last bone transform (uses index -1 instead of hardcoded 2)
+        co = self.make_constraint(mch[-1], 'TRANSFORM', parent_org[-1], space='LOCAL', map_from='ROTATION', map_to='LOCATION')
         co.from_min_x_rot = radians(-100)
         co.from_max_x_rot = radians(100)
         co.to_min_y = -.2
         co.to_max_y = .2
         co.map_to_y_from = 'X'
+        co = self.make_constraint(mch[-1], 'LIMIT_DISTANCE', parent_org[-1], distance=find_distance(mch[-1], parent_org[-1]),
+                                limit_mode='LIMITDIST_OUTSIDE', use_transform_limit=True,)
 
-        self.make_constraint(mid, 'COPY_LOCATION', ctrl[0], space='WORLD', influence=1.0)
-        self.make_constraint(mid, 'COPY_LOCATION', ctrl[2], space='WORLD', influence=0.5)
+        # Mid bones logic (skips if only 2 bones)
+        if len(self.bones.org) > 2:
+            start_pos = self.get_bone(self.bones.org[0]).tail
+            end_pos = self.get_bone(self.bones.org[-1]).tail
+            total_dist = (end_pos - start_pos).length
+            #test
+            print(f"initialise: bone {self.bones.org[1]} position {self.get_bone(self.bones.org[1]).tail}")
+            for i, mid_mch in enumerate(self.bones.mch.mid):
+                org_idx = i + 1
+                curr_pos = self.get_bone(self.bones.org[org_idx]).tail
+                
+                # Calculate dynamic influence based on distance
+                dist_from_start = (curr_pos - start_pos).length
+                influence = 1.0 - (dist_from_start / total_dist) if total_dist > 0 else 0.5
+                
+                self.make_constraint(mid_mch, 'COPY_LOCATION', ctrl[0], space='WORLD', influence=1.0)
+                self.make_constraint(mid_mch, 'COPY_LOCATION', ctrl[-1], space='WORLD', influence=1.0 - influence)
+
     @stage.generate_widgets
     def make_tip_widgets(self):
         for tip in self.bones.ctrl.tip:
             create_sphere_widget(self.obj, tip)
+
     ##############################
     # Main MCHs
     @stage.generate_bones
     def make_mch_bones(self):
         self.bones.mch.main = map_list(self.make_mch_bone, self.bones.org)
+
     def make_mch_bone(self, org:str):
-        #duplicate and flip org bones
         bone = self.copy_bone(org, make_derived_name(org, 'mch'))
         flip_bone(self.obj, bone)
         return bone
+
     @stage.parent_bones
-    def parent_mch_bones(self):
+    def parent_mch_main_bones(self): # Renamed to avoid duplicate stage name
         for child, parent in zip(self.bones.mch.main, self.rigify_parent.bones.deform):
             self.set_bone_parent(child, parent)
+
     @stage.rig_bones
     def rig_mch_bones(self):
-        for mch, tip_ctrl, parent_org in zip(self.bones.mch.main, self.bones.ctrl.tip, self.rigify_parent.bones.org):
+        for mch, tip_ctrl, parent_org_bone in zip(self.bones.mch.main, self.bones.ctrl.tip, self.rigify_parent.bones.org):
             self.make_constraint(mch, 'COPY_LOCATION', tip_ctrl)
-            self.make_constraint(mch, 'DAMPED_TRACK', parent_org)
+            self.make_constraint(mch, 'DAMPED_TRACK', parent_org_bone)
+
     ##############################
     # Direction mid MCH
     @stage.generate_bones
     def make_mid_direction_mch(self):
-        mid_bone = self.bones.org[1]
-        self.bones.mch.direction = self.copy_bone(mid_bone, make_derived_name(mid_bone, 'mch', '_direction'))
+        self.bones.mch.direction = []
+        if len(self.bones.org) > 2:
+            for i in range(1, len(self.bones.org) - 1):
+                mid_bone = self.bones.org[i]
+                dir_mch = self.copy_bone(mid_bone, make_derived_name(mid_bone, 'mch', '_direction'))
+                self.bones.mch.direction.append(dir_mch)
+
+    @stage.parent_bones
     def parent_mid_direction_mch(self):
-        self.set_bone_parent(self.bones.mch.direction, self.bones.org[1])
+            if len(self.bones.org) > 2:
+                for i, dir_mch in enumerate(self.bones.mch.direction):
+                    org_idx = i + 1
+                    # Parent to the parent rig's ORG bone to break the dependency cycle
+                    self.set_bone_parent(dir_mch, self.rigify_parent.bones.deform[org_idx])
+
     @stage.rig_bones
     def rig_mid_direction_mch(self):
-        direction = self.bones.mch.direction
-        self.make_constraint(direction, 'COPY_LOCATION', self.rigify_parent.bones.org[1])
-        self.make_constraint(direction, 'DAMPED_TRACK',  self.bones.mch.mid)
+        if len(self.bones.org) > 2:
+            for i, direction in enumerate(self.bones.mch.direction):
+                org_idx = i + 1
+                self.make_constraint(direction, 'COPY_LOCATION', self.rigify_parent.bones.org[org_idx])
+                self.make_constraint(direction, 'DAMPED_TRACK', self.bones.mch.mid[i])
+                self.make_constraint(self.bones.mch.tip[org_idx], 'COPY_LOCATION', direction, head_tail=1)
 
-        self.make_constraint(self.bones.mch.tip[1], 'COPY_LOCATION', direction, head_tail=1)
     ##############################
     # DEF bones
     @stage.generate_bones
     def make_def_bones(self):
         self.bones.deform = map_list(lambda b: self.copy_bone(b, make_derived_name(b, 'def'), parent=True), self.bones.org)
+
     @stage.rig_bones
     def rig_def_bones(self):
         for b, b2 in zip(self.bones.deform, self.bones.org):
             self.make_constraint(b, 'COPY_LOCATION', b2)
             self.make_constraint(b, 'COPY_ROTATION', b2)
+
     @stage.parent_bones
     def parent_def_bones(self):
         children = self.bones.deform
@@ -202,10 +265,11 @@ class Rig(BaseRig):
                 self.set_bone_parent(children[0], make_derived_name(parent,'def'))
             else:
                 self.set_bone_parent(child, parent)
+
     ##############################
     # ORG bones
     @stage.parent_bones
-    def parent_mch_bones(self):
+    def parent_org_bones(self): # Renamed to avoid duplicate stage name
         for child, parent in zip(self.bones.org, self.bones.mch.main):
             self.set_bone_parent(child, parent)
 

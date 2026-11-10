@@ -57,7 +57,7 @@ class Rig(BaseRig, BoneUtilityMixin):
         if self.params.create_main_bones:
             for org in self.bones.org:
                 name = make_derived_name(org, 'ctrl')
-                name = self.copy_bone(org, name)
+                name = self.copy_bone(org, name, parent=True)
                 self.bones.ctrl.main.append(name)
 
     @stage.generate_bones
@@ -85,7 +85,7 @@ class Rig(BaseRig, BoneUtilityMixin):
             org = self.seg_orgs[idx]
             t   = self.seg_indices[idx] / self.segments
             name = make_derived_name(org, 'def')
-            name = self.copy_bone(org, name, parent=False, scale=1.0 / self.segments)
+            name = self.copy_bone(org, name, parent=True, scale=1.0 / self.segments)
             put_bone(self.obj, name, _lerp_bone_pos(self.obj, org, t))
             self.bones.deform.append(name)
 

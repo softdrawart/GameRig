@@ -41,7 +41,7 @@ class Rig(TweakChainRig, RelinkConstraintsMixin):
 
     def initialize(self):
         super().initialize()
-        self.enable_scale = False
+        self.enable_scale = self.params.enable_scale
         self.copy_rotation_axes = self.params.copy_rotation_axes
         self.separate_rotation = self.params.separate_rotation
         self.separate_rotation_axes = self.params.separate_rotation_axes

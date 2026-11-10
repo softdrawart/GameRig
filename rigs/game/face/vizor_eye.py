@@ -167,6 +167,14 @@ class Rig(BaseRig):
                 from_min_z=min, from_max_z=max,  # Input range
                 to_min_x_rot=to_min_x_rot, to_max_x_rot=to_max_x_rot # Output range
             )
+            self.make_constraint(
+                owner_bone_name, 
+                'COPY_ROTATION',
+                controller,
+                owner_space='LOCAL',
+                target_space='LOCAL',
+                use_x=False, use_y=True, use_z=False,  # explicit axis locking
+            )
             con = self.make_constraint(
                 owner_bone_name, 
                 'LIMIT_ROTATION', 
@@ -187,7 +195,7 @@ class Rig(BaseRig):
         bones = self.bones.ctrl.eye_lid_top, self.bones.ctrl.eye_lid_bottom
         for bone in bones:
             pbone = self.get_bone(bone)
-            pbone.lock_rotation = [True]*3
+            pbone.lock_rotation = [True,False,True]
             pbone.lock_rotation_w = True
             pbone.lock_location = [True]*2 + [False]
             pbone.lock_scale = [True]*3

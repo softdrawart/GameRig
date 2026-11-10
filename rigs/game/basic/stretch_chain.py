@@ -5,7 +5,7 @@ from rigify.utils.naming import make_derived_name, strip_org
 from rigify.base_rig import BaseRig, stage
 from rigify.utils.widgets_basic import create_sphere_widget
 from rigify.utils.misc import map_list
-from rigify.utils.bones import put_bone
+from rigify.utils.bones import put_bone, TypedBoneDict
 from rigify.utils.rig import connected_children_names
 from ....utils.bones import BoneUtilityMixin
 
@@ -26,11 +26,15 @@ class Rig(BaseRig, BoneUtilityMixin):
         stretch: str
         pivot: str                     # Middle mch for one bone chain
 
+    class DefBones(TypedBoneDict):
+        main: list[str]                # Main deform chain
+        tweak: list[str]               # Tweak deform chain
+
     bones: BaseRig.ToplevelBones[
         list[str],
         'Rig.CtrlBones',
         'Rig.MchBones',
-        list[str]
+        'Rig.DefBones'
     ]
 
     def initialize(self):
@@ -38,6 +42,8 @@ class Rig(BaseRig, BoneUtilityMixin):
         # Initialize lists to ensure they persist across stages
         self.bones.ctrl.tweak = []
         self.bones.mch.tweak = []
+        self.bones.deform.main = []
+        self.bones.deform.tweak = []
         
         self.head_tweak_parent = self.params.head_tweak_parent
         self.tail_tweak_parent = self.params.tail_tweak_parent
@@ -83,8 +89,6 @@ class Rig(BaseRig, BoneUtilityMixin):
              self.set_bone_parent(end_tweak, self.tail_tweak_parent)
         else:
              self.set_bone_parent(end_tweak, self.rig_parent_bone) 
-
-
 
     @stage.generate_widgets
     def make_tweak_widgets(self):
@@ -177,30 +181,46 @@ class Rig(BaseRig, BoneUtilityMixin):
     @stage.rig_bones
     def rig_org_bones(self):
         self.make_constraint(self.bones.org[0], 'DAMPED_TRACK', self.bones.ctrl.tweak[1])
+
     ##############################
     # DEF chain (that copy transforms of org bones)
 
     @stage.generate_bones
     def make_deform_bones(self):
         orgs = self.bones.org
-        self.bones.deform = map_list(self.make_deform_bone, count(0), orgs)
+        self.bones.deform.main = map_list(self.make_deform_bone, count(0), orgs)
+        
+        # Generate DEF bones for tweak controls if the parameter is enabled
+        if self.params.def_tweak_bones:
+            for tweak in self.bones.ctrl.tweak:
+                def_name = self.copy_bone(tweak, make_derived_name(tweak, 'def'), parent=False)
+                self.bones.deform.tweak.append(def_name)
         
     def make_deform_bone(self, i: int, bone: str):
         return self.copy_bone(bone, make_derived_name(bone, 'def'), parent=True)
     
     @stage.parent_bones
     def parent_deform_bones(self):
-        self.parent_bone_chain(self.bones.deform, use_connect=False)
-        # This puts the deformation bones into the def hierarchy of its parent rig
-        self.clean_def_hierarchy(self.bones.deform[0])
+        self.parent_bone_chain(self.bones.deform.main, use_connect=False)
+        self.clean_def_hierarchy(self.bones.deform.main[0])
+
+        # Organize tweak def bones into the DEF hierarchy
+        if self.params.def_tweak_bones:
+            tweak_defs = self.bones.deform.tweak
+            self.set_bone_parent(tweak_defs[0], self.bones.deform.main[0]) #parent first tweak def to main def first bone
+            self.set_bone_parent(tweak_defs[-1], self.bones.deform.main[-1]) #parent last tweak def to main def last bone
     
     @stage.rig_bones
     def rig_deform_bone(self):
-        for deform, org in zip(self.bones.deform, self.bones.org):
+        for deform, org in zip(self.bones.deform.main, self.bones.org):
             self.make_constraint(deform, 'COPY_LOCATION', org)
             self.make_constraint(deform, 'COPY_ROTATION', org)
             self.make_constraint(deform, 'COPY_SCALE', org)
-        
+            
+        # Constrain the tweak def bones to follow the actual tweak controls
+        if self.params.def_tweak_bones:
+            for deform, tweak in zip(self.bones.deform.tweak, self.bones.ctrl.tweak):
+                self.make_constraint(deform, 'COPY_TRANSFORMS', tweak)
         
     @classmethod
     def add_parameters(cls, params):
@@ -215,9 +235,15 @@ class Rig(BaseRig, BoneUtilityMixin):
             description="Name of the bone to parent the tweak at the tail to (default: root/parent)",
             default=""
         )
+        params.def_tweak_bones = bpy.props.BoolProperty(
+            name="DEF Tweak Bones",
+            description="Create deformation bones for tweak controls to deform mesh at endpoints",
+            default=False
+        )
 
     @classmethod
     def parameters_ui(cls, layout, params):
         """ Draw the parameters in the UI. """
         layout.prop(params, "head_tweak_parent")
         layout.prop(params, "tail_tweak_parent")
+        layout.prop(params, "def_tweak_bones")

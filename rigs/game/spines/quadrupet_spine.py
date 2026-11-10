@@ -16,7 +16,7 @@ from rigify.utils.naming import strip_org, make_mechanism_name, make_derived_nam
 from rigify.utils.bones import (put_bone, align_bone_to_axis, align_bone_orientation, TypedBoneDict)
 
 from rigify.utils.widgets import adjust_widget_transform_mesh
-from rigify.utils.widgets_basic import create_circle_widget, create_cube_widget, create_bone_widget
+from rigify.utils.widgets_basic import create_circle_widget, create_cube_widget, create_sphere_widget
 
 from rigify.utils.misc import map_list
 from rigify.utils.switch_parent import SwitchParentBuilder
@@ -57,6 +57,7 @@ class Rig(BaseRig, BoneUtilityMixin):
         master: str                    # Master control
         chest: list[str]
         hips: list[str]
+        tweak: list[str]
 
     class MchBones(BaseRig.MchBones):
         pivot: str                     # Central pivot between sub-chains
@@ -201,10 +202,10 @@ class Rig(BaseRig, BoneUtilityMixin):
     def parent_deform_chain(self):
         self.parent_bone_chain(self.bones.deform, use_connect=False)
 
-    @stage.rig_bones
+    """ @stage.rig_bones
     def rig_deform_chain(self):
         for deform, org in zip(self.bones.deform, self.bones.org):
-            self.make_constraint(deform, 'COPY_TRANSFORMS', org)
+            self.make_constraint(deform, 'COPY_TRANSFORMS', org) """
 
     @stage.configure_bones
     def configure_bbone_chain(self):
@@ -220,3 +221,60 @@ class Rig(BaseRig, BoneUtilityMixin):
     @classmethod
     def parameters_ui(cls, layout, params):
         pass
+
+    ####################################################
+    # Tweak bones
+
+    @stage.generate_bones
+    def make_tweak_chain(self):
+        orgs = self.bones.org
+        self.bones.ctrl.tweak = map_list(self.make_tweak_bone, count(0), orgs + orgs[-1:])
+    def make_tweak_bone(self, i: int, org: str):
+        name = self.copy_bone(org, 'tweak_' + strip_org(org), parent=False, scale=0.5)
+
+        if i == len(self.bones.org):
+            put_bone(self.obj, name, self.get_bone(org).tail)
+
+        return name
+    
+    @stage.configure_bones
+    def configure_tweak_chain(self):
+        for i, tweak in zip(count(0), self.bones.ctrl.tweak):
+            tweak_pb = self.get_bone(tweak)
+            tweak_pb.rotation_mode = 'ZXY'
+
+            if i < len(self.bones.org):
+                tweak_pb.lock_rotation_w = True
+                tweak_pb.lock_rotation = (True, False, True)
+            else:
+                tweak_pb.lock_rotation_w = True
+                tweak_pb.lock_rotation = (True, True, True)
+
+    @stage.generate_widgets
+    def make_tweak_widgets(self):
+        for tweak in self.bones.ctrl.tweak:
+            create_sphere_widget(self.obj, tweak)
+            
+    @stage.parent_bones
+    def parent_tweak_chain(self):
+        ctrl = self.bones.ctrl
+        # Combine hips and chest to create a linear list of main controls
+        orgs = self.bones.org
+
+        # Parent first tweak to the first orgs bone
+        self.set_bone_parent(ctrl.tweak[0], orgs[0])
+        # Parent second tweak to the second org bone to follow MCH in the middle
+        self.set_bone_parent(ctrl.tweak[1], orgs[1])
+
+        # Parent last two tweaks to the last orgs bone
+        self.set_bone_parent(ctrl.tweak[-1], orgs[-1])
+        self.set_bone_parent(ctrl.tweak[-2], orgs[-1])
+
+    @stage.rig_bones
+    def rig_deform_chain(self):
+        tweaks = self.bones.ctrl.tweak
+        
+        # zip deform bones with tweak (current) and tweak[1:] (next)
+        for deform, tweak, next_tweak in zip(self.bones.deform, tweaks, tweaks[1:]):
+            self.make_constraint(deform, 'COPY_TRANSFORMS', tweak)
+            self.make_constraint(deform, 'DAMPED_TRACK', next_tweak)
