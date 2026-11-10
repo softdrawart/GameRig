@@ -1,15 +1,28 @@
 import bpy
-from rigify.rigs.limbs.limb_rigs import BaseLimbRig
+#from rigify.rigs.limbs.limb_rigs import BaseLimbRig
+from ....rigs.game.limbs.limb_rigs import BaseLimbRig as myBasicLimbRig
 from mathutils import Matrix, Vector
 from rigify.utils.widgets import adjust_widget_transform_mesh
 from rigify.utils.bones import align_chain_x_axis, align_bone_x_axis, align_bone_z_axis, put_bone
 from rigify.utils.misc import matrix_from_axis_roll, matrix_from_axis_pair
 from rigify.rigs.widgets import create_foot_widget
 from rigify.utils.naming import make_derived_name
+from rigify.base_rig import stage
 
 
-class Rig(BaseLimbRig):
+class Rig(myBasicLimbRig):
     """Basic 3 bones limb rig with a single IK system."""
+
+    class CtrlBones(myBasicLimbRig.CtrlBones):
+         extra_ik: str
+
+    bones: myBasicLimbRig.ToplevelBones[
+         'myBasicLimbRig.OrgBones',
+         'Rig.CtrlBones',
+         'myBasicLimbRig.MchBones',
+         list[str]
+    ]
+
     def prepare_bones(self):
             orgs = self.bones.org.main
             foot = self.get_bone(orgs[2])
@@ -42,7 +55,16 @@ class Rig(BaseLimbRig):
     def make_ik_control_bone(self, orgs):
             name = self.copy_bone(orgs[2], make_derived_name(orgs[2], 'ctrl', '_ik'))
             put_bone(self.obj, name, None, matrix=self.ik_matrix)
+            #add extra controller parented to main controller
+            self.bones.ctrl.extra_ik = extra = self.copy_bone(orgs[2], make_derived_name(orgs[2], 'ctrl', '_extra_ik'))
+            put_bone(self.obj, extra, None, matrix=self.ik_matrix)
             return name
+    
+    def get_ik_input_bone(self):
+        return self.bones.ctrl.extra_ik
+    @stage.parent_bones
+    def parent_extra_bone(self):
+        self.set_bone_parent(self.bones.ctrl.extra_ik, self.get_ik_input_bone())
 
     def make_ik_ctrl_widget(self, ctrl):
         # Create the basic foot widget mesh
