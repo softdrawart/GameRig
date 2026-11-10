@@ -1,13 +1,32 @@
 import bpy
 from mathutils import Vector
 from bpy.types import PoseBone
-from rigify.base_rig import BaseRig, stage, BaseRigMixin
+from ....base_rig import base_rig as BaseRig
+from rigify.base_rig import stage, BaseRigMixin
 from rigify.utils.naming import make_derived_name, change_name_side, Side
 from rigify.utils.bones import TypedBoneDict, BaseBoneDict, put_bone, align_bone_roll
 from rigify.base_generate import GeneratorPlugin, BaseGenerator
+from rigify.utils.widgets import create_registered_widget
 from math import degrees, radians
 
+def calculate_alignment_rotation(obj, pb_a, pb_b):
+    """Return result in radians"""
+    if not obj or obj.type != 'ARMATURE':
+        print(f"Error: Armature '{armature_name}' not found.")
+    if not pb_a or not pb_b:
+        print("Error: Could not find one or both bones.")
+        return
 
+    matrix_aligned_local = obj.convert_space(
+        pose_bone=pb_a,
+        matrix=pb_b.matrix,
+        from_space='POSE',
+        to_space='LOCAL'
+    )
+
+    rotation_needed = matrix_aligned_local.to_euler('XYZ')
+    
+    return rotation_needed
 
 class Rig(BaseRig):
 
@@ -71,6 +90,12 @@ class Rig(BaseRig):
         parent = self.parent_bone
         self.set_bone_parent(self.bones.org.eye_lid_top, parent)
         self.set_bone_parent(self.bones.org.eye_lid_bottom, parent)
+
+        
+        self.clean_def_hierarchy(self.bones.org.eye_lid_top)
+        self.clean_def_hierarchy(self.bones.org.eye_lid_bottom)
+        self.clean_def_hierarchy(self.bones.org.eye)
+
     ####################################################
     # eye_lid bones 
     @stage.generate_bones
@@ -88,6 +113,7 @@ class Rig(BaseRig):
 
         #move out and orient lid controllers in the direction
         vec = (pbone.tail - pbone.head).normalized()
+        vec[2] = 0 #exclude z from direction
         axis_idx, axis_val = max(enumerate(vec), key=lambda i: abs(i[1]))
         move_offset = Vector((0, 0, 0))
         sign = 1 if axis_val >= 0 else -1
@@ -112,6 +138,12 @@ class Rig(BaseRig):
             [self.bones.org.eye_lid_top, self.bones.org.eye_lid_bottom]
         )
 
+        angleMin = calculate_alignment_rotation(self.obj, self.get_bone(self.bones.org.eye_lid_top), self.get_bone(self.bones.org.eye_lid_bottom))[0] #isolate X rotation value
+        angleMin = degrees(angleMin)
+        angleMax = self.params.angleMax
+        targetMin = self.params.targetMin
+        targetMax = (targetMin * angleMax)/(angleMin) #find max value using linear relationship Ratio Rule
+
         for i, (controller, owner_bone_name) in enumerate(bone_pairs):
             self.make_constraint(
                 owner_bone_name, 
@@ -120,6 +152,10 @@ class Rig(BaseRig):
                 use_x=True, use_y=False, use_z=False,  # explicit axis locking
                 owner_space='LOCAL', target_space='LOCAL'
             )
+            min =-abs(targetMin) if i==0 else -abs(targetMax)
+            max = abs(targetMax) if i==0 else abs(targetMin)
+            to_min_x_rot = -abs(radians(angleMin)) if i==0 else -abs(radians(angleMax))
+            to_max_x_rot = abs(radians(angleMax)) if i==0 else abs(radians(angleMin))
             self.make_constraint(
                 owner_bone_name, 
                 'TRANSFORM', 
@@ -127,21 +163,66 @@ class Rig(BaseRig):
                 owner_space='LOCAL', target_space='LOCAL',
                 map_from='LOCATION', map_to='ROTATION',
                 map_to_x_from='Z',
-                from_min_z=-0.04, from_max_z=0.04,  # Input range
-                to_min_x_rot=radians(-50), to_max_x_rot=radians(50) # Output range
+                map_to_z_from='X',
+                from_min_z=min, from_max_z=max,  # Input range
+                to_min_x_rot=to_min_x_rot, to_max_x_rot=to_max_x_rot # Output range
             )
             self.make_constraint(
                 owner_bone_name, 
+                'COPY_ROTATION',
+                controller,
+                owner_space='LOCAL',
+                target_space='LOCAL',
+                use_x=False, use_y=True, use_z=False,  # explicit axis locking
+            )
+            con = self.make_constraint(
+                owner_bone_name, 
                 'LIMIT_ROTATION', 
                 owner_space='LOCAL',
-                use_limit_x=True, min_x=radians(-50.2) if i==0 else radians(6.2), max_x=radians(6.2) if i==0 else radians(-50.2), # Lock Y
-                use_legacy_behavior=True
+                use_limit_x=True, min_x=to_min_x_rot, max_x=to_max_x_rot, # Lock Y
             )
-
+            if con and con.use_legacy_behavior:
+                con.use_legacy_behavior=False
+            #rig Target Bones
+            self.make_constraint(
+                controller, 
+                'LIMIT_LOCATION', 
+                min_z=min, max_z=max,
+                owner_space='LOCAL'
+            )
             
-        
+    def configure_bones(self):
+        bones = self.bones.ctrl.eye_lid_top, self.bones.ctrl.eye_lid_bottom
+        for bone in bones:
+            pbone = self.get_bone(bone)
+            pbone.lock_rotation = [True,False,True]
+            pbone.lock_rotation_w = True
+            pbone.lock_location = [True]*2 + [False]
+            pbone.lock_scale = [True]*3
 
-
+    def generate_widgets(self):
+        bones = self.bones.ctrl.eye_lid_top, self.bones.ctrl.eye_lid_bottom, self.bones.ctrl.target
+        for bone in bones:
+            create_registered_widget(self.obj, bone, 'circle')
+    
+    @classmethod
+    def add_parameters(cls, params):
+        params.angleMax = bpy.props.FloatProperty(
+            name='angleMax',
+            default=20,
+            description='Angle for maximum eyelid Opening'
+        )
+        params.targetMin = bpy.props.FloatProperty(
+            name='angleMax',
+            default=-0.04,
+            description='Location for minimul eyelid control Opening'
+        )
+    
+    @classmethod
+    def parameters_ui(cls, layout, params):
+        r=layout.row()
+        r.prop(params, 'angleMax')
+        r.prop(params, 'targetMin')
 
 
     
@@ -167,17 +248,120 @@ class EyeClusterControl(GeneratorPlugin, BaseRigMixin):
         if len(self.rig_list) > 1:
             new_position = Vector((0,0,0))
             for rig in self.rig_list:
-                new_position += self.get_bone(rig.bones.ctrl.target).head
+                try:
+                    new_position += self.get_bone(rig.bones.ctrl.target).head
+                except AttributeError:
+                    self.raise_error("'{}' does not have target name specified for eyes make_master_bone position!", rig.bones.ctrl)
             new_position /= len(self.rig_list) #get avarage position for master control
             target_bone_name = self.rig_list[0].bones.ctrl.target
-            self.master_bone = master_bone_name = self.copy_bone(target_bone_name, make_derived_name(change_name_side(target_bone_name, side=Side.MIDDLE), 'ctrl', suffix='_C'), parent=True)
+            self.master_bone = master_bone_name = self.copy_bone(target_bone_name, make_derived_name(change_name_side(target_bone_name, side=Side.MIDDLE), 'ctrl'), parent=True)
             put_bone(self.obj, master_bone_name, new_position)
     @stage.parent_bones
     def parent_target_bones_to_master(self):
         for rig in self.rig_list:
             self.set_bone_parent(rig.bones.ctrl.target, self.master_bone)
+    
+    def generate_widgets(self):
+        create_registered_widget(self.obj, self.master_bone, 'diamond')
 
 
 
-                    
+def create_sample(obj):  # noqa
+    # generated by rigify.utils.write_metarig
+    bpy.ops.object.mode_set(mode='EDIT')
+    arm = obj.data
 
+    bones = {}
+
+    bone = arm.edit_bones.new('eye.R')
+    bone.head = -0.0415, -0.0755, 1.3777
+    bone.tail = -0.0415, -0.1030, 1.3776
+    bone.roll = 3.1416
+    bone.use_connect = False
+    bones['eye.R'] = bone.name
+    bone = arm.edit_bones.new('eye_up.R')
+    bone.head = -0.0415, -0.0755, 1.3777
+    bone.tail = -0.0459, -0.1104, 1.3882
+    bone.roll = 2.3681
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['eye.R']]
+    bones['eye_up.R'] = bone.name
+    bone = arm.edit_bones.new('eye_down.R')
+    bone.head = -0.0415, -0.0755, 1.3777
+    bone.tail = -0.0472, -0.1047, 1.3601
+    bone.roll = -2.5587
+    bone.use_connect = False
+    bone.parent = arm.edit_bones[bones['eye.R']]
+    bones['eye_down.R'] = bone.name
+
+    bpy.ops.object.mode_set(mode='OBJECT')
+    pbone = obj.pose.bones[bones['eye.R']]
+    pbone.rigify_type = 'game.face.vizor_eye'
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    try:
+        pbone.rigify_parameters.enable_scale = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.make_widget = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.relink_constraints = True
+    except AttributeError:
+        pass
+    pbone = obj.pose.bones[bones['eye_up.R']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    try:
+        pbone.rigify_parameters.enable_scale = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.relink_constraints = True
+    except AttributeError:
+        pass
+    pbone = obj.pose.bones[bones['eye_down.R']]
+    pbone.rigify_type = ''
+    pbone.lock_location = (False, False, False)
+    pbone.lock_rotation = (False, False, False)
+    pbone.lock_rotation_w = False
+    pbone.lock_scale = (False, False, False)
+    pbone.rotation_mode = 'QUATERNION'
+    try:
+        pbone.rigify_parameters.enable_scale = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.make_widget = True
+    except AttributeError:
+        pass
+    try:
+        pbone.rigify_parameters.relink_constraints = True
+    except AttributeError:
+        pass
+
+    bpy.ops.object.mode_set(mode='EDIT')
+    for bone in arm.edit_bones:
+        bone.select = False
+        bone.select_head = False
+        bone.select_tail = False
+    for b in bones:
+        bone = arm.edit_bones[bones[b]]
+        bone.select = True
+        bone.select_head = True
+        bone.select_tail = True
+        bone.bbone_x = bone.bbone_z = bone.length * 0.05
+        arm.edit_bones.active = bone
+        if bcoll := arm.collections.active:
+            bcoll.assign(bone)
+
+    return bones

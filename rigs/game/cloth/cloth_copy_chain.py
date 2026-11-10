@@ -53,10 +53,6 @@ class Rig(TweakChainRig, old_simple_tentacle, RelinkConstraintsMixin):
         else:
             self.make_constraint(deform, 'COPY_LOCATION', org)
             self.make_constraint(deform, 'COPY_ROTATION', org)
-    # Prepare
-    def prepare_bones(self):
-        if self.params.roll_alignment == "automatic":
-            align_chain_x_axis(self.obj, self.bones.org)
 
     ##############################
     # Control chain

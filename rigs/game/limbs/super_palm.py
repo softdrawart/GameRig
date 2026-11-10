@@ -19,7 +19,7 @@ class Rig(BoneUtilityMixin, old_super_palm):
 
         """ Gather and validate data about the rig.
         """
-        self.enable_scale = self.params.enable_scale
+        self.enable_scale = False
 
 
     ####################################################
@@ -60,11 +60,7 @@ class Rig(BoneUtilityMixin, old_super_palm):
             RigifyParameters PropertyGroup
         """
         super().add_parameters(params)
-        params.enable_scale = bpy.props.BoolProperty(
-            name="Scale",
-            default=True,
-            description="Deformation bones will inherit the scale of their ORG bones. Enable this only if you know what you are doing because scale can break your rig in the game engine"
-        )
+        
 
     @classmethod
     def parameters_ui(self, layout, params):
@@ -73,7 +69,6 @@ class Rig(BoneUtilityMixin, old_super_palm):
         super().parameters_ui(layout, params)
 
         r = layout.row()
-        r.prop(params, "enable_scale")
 
 
 def create_sample(obj):
