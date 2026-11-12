@@ -64,7 +64,7 @@ class Rig(myBasicLimbRig):
         return self.bones.ctrl.extra_ik
     @stage.parent_bones
     def parent_extra_bone(self):
-        self.set_bone_parent(self.bones.ctrl.extra_ik, self.get_ik_input_bone())
+        self.set_bone_parent(self.bones.ctrl.extra_ik, self.bones.ctrl.ik)
 
     def make_ik_ctrl_widget(self, ctrl):
         # Create the basic foot widget mesh
