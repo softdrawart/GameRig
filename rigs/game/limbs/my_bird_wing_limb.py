@@ -1,8 +1,10 @@
+from rigify.base_rig import stage
+
 from .rear_paw import Rig as RearPawRig
-from rigify.rigs.limbs.limb_rigs import BaseLimbRig
+from rigify.rigs.limbs.limb_rigs import BaseLimbRig, SegmentEntry
 from rigify.utils.naming import make_derived_name
 from rigify.utils.widgets_basic import create_limb_widget, create_circle_widget
-from rigify.utils.bones import align_bone_x_axis, align_bone_z_axis, compute_chain_x_axis, flip_bone
+from rigify.utils.bones import align_bone_x_axis, align_bone_z_axis, compute_chain_x_axis, flip_bone, put_bone
 from rigify.utils.widgets import create_registered_widget
 from rigify.utils.bones import align_bone_to_axis
 
@@ -15,6 +17,16 @@ class Rig(RearPawRig):
     # Constrain the rig to exactly 3 bones (Thigh, Shin, Heel)
     min_valid_orgs = 3
     max_valid_orgs = 3
+
+    bones: RearPawRig.ToplevelBones[
+        'RearPawRig.OrgBones',
+        'Rig.CtrlBones',
+        'RearPawRig.MchBones',
+        list[str]
+    ]
+
+    class CtrlBones(RearPawRig.CtrlBones):
+        extra_palm: str
     
     def initialize(self):
         super().initialize()
@@ -77,15 +89,74 @@ class Rig(RearPawRig):
                 align_bone_z_axis(self.obj, orgs[2], foot_x)
 
     def make_ik2_mch_target_bone(self, orgs: list[str]):
-        # Override rear_paw's hardcoded 4th bone requirement for the IK2 stretch target.
-        # Use the 3rd bone (heel/wing tip) instead of the missing toe (orgs[3]).
         return self.copy_bone(orgs[2], make_derived_name(orgs[0], 'mch', '_ik2_target'), scale=1 / 2)
     
     def align_ik_control_bone(self, name: str):
-        align_bone_to_axis(self.obj, name, 'y', flip=True)
+        #align_bone_to_axis(self.obj, name, 'y', flip=True)
         bone = self.get_bone(name)
-        bone.tail[2] = bone.head[2]
-        bone.roll = 0
+        put_bone(self.obj, name, bone.tail)
+        #bone.tail[2] = bone.head[2]
+        #bone.roll = 0
 
     def make_ik_ctrl_widget(self, ctrl):
-        create_registered_widget(self.obj, ctrl, 'cube')
+        create_registered_widget(self.obj, ctrl, 'cube', size=0.5)
+    #######
+    #extra palm rotation control for wing tip
+    @stage.generate_bones
+    def make_palm_extra_rotation_bone(self):
+        org = self.bones.org.main[2]
+        self.bones.ctrl.extra_palm = self.copy_bone(org, make_derived_name(org, 'ctrl', '_extra_rotation'))
+
+    @stage.parent_bones
+    def parent_palm_extra_rotation_bone(self):
+        self.set_bone_parent(self.bones.ctrl.extra_palm, self.bones.ctrl.heel)
+
+    def parent_tweak_mch_bone(self, i: int, mch: str, entry: SegmentEntry):
+        if i == 0:
+            self.set_bone_parent(mch, self.rig_parent_bone, inherit_scale='FIX_SHEAR')
+        else:
+            if entry.org == self.bones.org.main[2]:
+                # Parent the 3rd tweak bone to the extra palm rotation control for proper wing tip rotation
+                self.set_bone_parent(mch, self.bones.ctrl.extra_palm)
+            else:
+                self.set_bone_parent(mch, entry.org)
+
+    @stage.rig_bones
+    def rig_tweak_mch_chain(self):
+        #copy local rotation from main ik
+        co = self.make_constraint(self.bones.ctrl.extra_palm, 'COPY_ROTATION', self.bones.ctrl.ik, use_offset=True, target_space='LOCAL', owner_space='LOCAL')
+                
+    def rig_tweak_mch_bone(self, i: int, tweak: str, entry: SegmentEntry):
+            if entry.seg_idx:
+                prev_tweak, next_tweak, fac = self.get_tweak_blend(i, entry)
+    
+                self.make_constraint(tweak, 'COPY_TRANSFORMS', prev_tweak)
+                self.make_constraint(tweak, 'COPY_TRANSFORMS', next_tweak, influence=fac)
+                self.make_constraint(tweak, 'DAMPED_TRACK', next_tweak)
+    
+            elif entry.seg_idx is not None or entry.org == self.bones.org.main[2]:
+                self.make_constraint(tweak, 'COPY_SCALE', self.bones.mch.follow, use_make_uniform=True)
+    
+            if i == 0:
+                self.make_constraint(tweak, 'COPY_LOCATION', entry.org)
+                self.make_constraint(tweak, 'DAMPED_TRACK', entry.org, head_tail=1)
+
+    def rig_org_bone(self, i: int, org: str, fk: str, ik: str | None):
+        #overide MCH ik target (3rd bone) hand to our custom to control rotation of the wing tip
+        if ik == self.bones.mch.ik_target:
+            ik = self.bones.ctrl.extra_palm
+
+        self.make_constraint(org, 'COPY_TRANSFORMS', fk)
+
+        if ik:
+            con = self.make_constraint(org, 'COPY_TRANSFORMS', ik)
+
+            self.make_driver(con, 'influence',
+                             variables=[(self.prop_bone, 'IK_FK')], polynomial=[1.0, -1.0])
+    @stage.configure_bones
+    def configure_palm_extra_rotation_bone(self):
+        self.make_fk_control_widget(1, self.bones.ctrl.extra_palm)
+        bone = self.get_bone(self.bones.ctrl.extra_palm)
+        bone.lock_location = (False, False, False)
+        bone.lock_rotation = (False, False, False)
+        bone.lock_scale = (True, True, True)
