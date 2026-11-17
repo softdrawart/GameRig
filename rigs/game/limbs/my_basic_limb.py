@@ -2,7 +2,7 @@ import bpy
 #from rigify.rigs.limbs.limb_rigs import BaseLimbRig
 from ....rigs.game.limbs.limb_rigs import BaseLimbRig as myBasicLimbRig
 from mathutils import Matrix, Vector
-from rigify.utils.widgets import adjust_widget_transform_mesh
+from rigify.utils.widgets import adjust_widget_transform_mesh, create_registered_widget
 from rigify.utils.bones import align_chain_x_axis, align_bone_x_axis, align_bone_z_axis, put_bone
 from rigify.utils.misc import matrix_from_axis_roll, matrix_from_axis_pair
 from rigify.rigs.widgets import create_foot_widget
@@ -15,11 +15,13 @@ class Rig(myBasicLimbRig):
 
     class CtrlBones(myBasicLimbRig.CtrlBones):
          extra_ik: str
+    class MchBones(myBasicLimbRig.MchBones):
+         extra_ik: str
 
     bones: myBasicLimbRig.ToplevelBones[
          'myBasicLimbRig.OrgBones',
          'Rig.CtrlBones',
-         'myBasicLimbRig.MchBones',
+         'Rig.MchBones',
          list[str]
     ]
 
@@ -52,6 +54,7 @@ class Rig(myBasicLimbRig):
             self.ik_matrix = matrix_from_axis_roll(ik_y_axis, 0)
             self.roll_matrix = matrix_from_axis_pair(ik_y_axis, foot_x, self.main_axis)
 
+    #extra control bone
     def make_ik_control_bone(self, orgs):
             name = self.copy_bone(orgs[2], make_derived_name(orgs[2], 'ctrl', '_ik'))
             put_bone(self.obj, name, None, matrix=self.ik_matrix)
@@ -59,12 +62,33 @@ class Rig(myBasicLimbRig):
             self.bones.ctrl.extra_ik = extra = self.copy_bone(orgs[2], make_derived_name(orgs[2], 'ctrl', '_extra_ik'))
             put_bone(self.obj, extra, None, matrix=self.ik_matrix)
             return name
-    
     def get_ik_input_bone(self):
         return self.bones.ctrl.extra_ik
     @stage.parent_bones
     def parent_extra_bone(self):
         self.set_bone_parent(self.bones.ctrl.extra_ik, self.bones.ctrl.ik)
+    @stage.configure_bones
+    def create_widgets(self):
+        create_registered_widget(self.obj, self.bones.ctrl.extra_ik, 'cube', radius=0.3, head_tail=0.5)
+
+    #extra MCH bones
+    @stage.generate_bones
+    def make_extra_mch_bone(self):
+        # Create an extra MCH bone for the IK system
+        orgs = self.bones.org.main
+        name = self.copy_bone(orgs[2], make_derived_name(orgs[2], 'mch', '_extra_ik'))
+        self.bones.mch.extra_ik = name
+    @stage.parent_bones
+    def parent_extra_mch_bone(self):
+        self.set_bone_parent(self.bones.mch.extra_ik, self.bones.ctrl.ik)
+    @stage.configure_bones
+    def configure_extra_mch_bone(self):
+        #constraint mch bone to ORG bone with driver for IK FK switch
+        mch = self.bones.mch.extra_ik
+        fk = self.bones.ctrl.fk[-1]
+        con = self.make_constraint(mch, 'COPY_TRANSFORMS', fk)
+        self.make_driver(con, 'influence',
+                            variables=[(self.prop_bone, 'IK_FK')])
 
     def make_ik_ctrl_widget(self, ctrl):
         # Create the basic foot widget mesh

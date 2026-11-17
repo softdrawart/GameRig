@@ -92,9 +92,7 @@ class Rig(TweakChainRig, RelinkConstraintsMixin):
         # use_connect=False for backward compatibility
         self.parent_bone_chain(self.bones.ctrl.fk, use_connect=False)
         if self.relink:
-            new_parent = self.relink_bone_parent(self.bones.org[0])
-            if new_parent:
-                self.set_bone_parent(self.bones.ctrl.fk[0], new_parent)
+            self.relink_bone_parent(self.bones.ctrl.fk[0])
 
     # Configure
     @stage.configure_bones

@@ -115,11 +115,11 @@ class Rig(RearPawRig):
         if i == 0:
             self.set_bone_parent(mch, self.rig_parent_bone, inherit_scale='FIX_SHEAR')
         else:
-            if entry.org == self.bones.org.main[2]:
+            """ if entry.org == self.bones.org.main[2]:
                 # Parent the 3rd tweak bone to the extra palm rotation control for proper wing tip rotation
                 self.set_bone_parent(mch, self.bones.ctrl.extra_palm)
-            else:
-                self.set_bone_parent(mch, entry.org)
+            else: """
+            self.set_bone_parent(mch, entry.org)
 
     @stage.rig_bones
     def rig_tweak_mch_chain(self):
@@ -153,6 +153,13 @@ class Rig(RearPawRig):
 
             self.make_driver(con, 'influence',
                              variables=[(self.prop_bone, 'IK_FK')], polynomial=[1.0, -1.0])
+            
+    @stage.configure_bones
+    def configure_ik_mch_panel(self):
+        super().configure_ik_mch_panel()
+        prop_pbone = self.get_bone(self.prop_bone)
+        prop_pbone["IK_FK"] = 1.0
+
     @stage.configure_bones
     def configure_palm_extra_rotation_bone(self):
         self.make_fk_control_widget(1, self.bones.ctrl.extra_palm)
@@ -160,3 +167,7 @@ class Rig(RearPawRig):
         bone.lock_location = (False, False, False)
         bone.lock_rotation = (False, False, False)
         bone.lock_scale = (True, True, True)
+
+    def get_ik_output_chain(self):
+            tail = [self.bones.mch.ik_heel2] if self.use_heel2 else []
+            return [self.get_ik_chain_base(), self.bones.mch.ik_end, self.bones.ctrl.extra_palm] + tail
