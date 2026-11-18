@@ -21,7 +21,8 @@ from rigify.utils.widgets_basic import create_circle_widget, create_cube_widget,
 from rigify.utils.misc import map_list
 from rigify.utils.switch_parent import SwitchParentBuilder
 
-from rigify.base_rig import stage, BaseRig
+from ....base_rig import BaseRig
+from rigify.base_rig import stage
 from ....utils.bones import BoneUtilityMixin
 
 
@@ -217,10 +218,14 @@ class Rig(BaseRig, BoneUtilityMixin):
 
     @classmethod
     def add_parameters(cls, params):
-        pass
+        params.enable_scale = bpy.props.BoolProperty(
+            name="Scale",
+            default=True,
+            description="Deformation bones will inherit the scale of their ORG bones. Enable this only if you know what you are doing because scale can break your rig in the game engine"
+        )
     @classmethod
     def parameters_ui(cls, layout, params):
-        pass
+        layout.prop(params, "enable_scale")
 
     ####################################################
     # Tweak bones
@@ -276,5 +281,9 @@ class Rig(BaseRig, BoneUtilityMixin):
         
         # zip deform bones with tweak (current) and tweak[1:] (next)
         for deform, tweak, next_tweak in zip(self.bones.deform, tweaks, tweaks[1:]):
-            self.make_constraint(deform, 'COPY_TRANSFORMS', tweak)
+            if self.params.enable_scale:
+                self.make_constraint(deform, 'COPY_TRANSFORMS', tweak)
+            else:
+                self.make_constraint(deform, 'COPY_LOCATION', tweak)
+                self.make_constraint(deform, 'COPY_ROTATION', tweak)
             self.make_constraint(deform, 'DAMPED_TRACK', next_tweak)

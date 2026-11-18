@@ -12,7 +12,8 @@ from math import degrees, radians
 def calculate_alignment_rotation(obj, pb_a, pb_b):
     """Return result in radians"""
     if not obj or obj.type != 'ARMATURE':
-        print(f"Error: Armature '{armature_name}' not found.")
+        print("Error: Armature not found.")
+        return
     if not pb_a or not pb_b:
         print("Error: Could not find one or both bones.")
         return
@@ -43,18 +44,23 @@ class Rig(BaseRig):
         target: str
         eye_lid_top: str
         eye_lid_bottom: str
+        master: str
+
+    class DeformBones(TypedBoneDict):
+        eye: str
+        eye_lid_top: str
+        eye_lid_bottom: str
 
     bones: BaseRig.ToplevelBones[
-        'Rig.OrgBones', #ORG bones are renamed and placed here as Def bones are here
-        'Rig.CtrlBones', #lid controllers and target controller
-        str, #empty
-        str #empty
+        'Rig.OrgBones', # ORG bones are now kept purely as ORG
+        'Rig.CtrlBones', # Lid controllers and target controller
+        str, # Empty (MCH)
+        'Rig.DeformBones' # Explicit DEF bones generated here
     ]
 
     def initialize(self):
         cluster_control = EyeClusterControl(self.generator)
         cluster_control.register_rig(self)
-        #renames ORG to DEF and put it to ORG bones
     
     def find_org_bones(self, pose_bone: PoseBone) -> BaseBoneDict:
         self.parent_bone = pose_bone.parent.name
@@ -62,11 +68,11 @@ class Rig(BaseRig):
         old_bones = [pose_bone.name] + [bone.name for bone in pose_bone.children]
         for i, old_name in enumerate(old_bones):
             if i == 0:
-                bones.eye = self.generator.rename_org_bone(old_name, make_derived_name(old_name, 'def'))
+                bones.eye = old_name
             elif any(s in old_name.lower() for s in ('_top', '_up')):
-                bones.eye_lid_top = self.generator.rename_org_bone(old_name, make_derived_name(old_name, 'def'))
+                bones.eye_lid_top = old_name
             elif any(s in old_name.lower() for s in ('_bottom', '_down')):
-                bones.eye_lid_bottom = self.generator.rename_org_bone(old_name, make_derived_name(old_name, 'def'))
+                bones.eye_lid_bottom = old_name
         return bones
     
     ####################################################
@@ -76,25 +82,61 @@ class Rig(BaseRig):
         bone_name = self.bones.org.eye
         self.bones.ctrl.target = bone = self.copy_bone(bone_name, make_derived_name(bone_name, 'ctrl', suffix='_C'), parent=True)
         org_bone = self.get_bone(bone_name)
-        new_position = org_bone.head + ((org_bone.tail - org_bone.head) * 5)  #normalized()
+        new_position = org_bone.head + ((org_bone.tail - org_bone.head) * 5)
         put_bone(self.obj, bone, new_position)
+        
     @stage.rig_bones
     def rig_target_bone(self):
         target_bone_name = self.bones.ctrl.target
         owner_bone_name = self.bones.org.eye
         self.make_constraint(owner_bone_name, 'DAMPED_TRACK', target_bone_name, track_axis='Y')
+
+    ####################################################
+    # master bone
+    @stage.generate_bones
+    def make_master_eye_bone(self):
+        self.bones.ctrl.master = self.copy_bone(self.bones.org.eye, 'Master_' + make_derived_name(self.bones.org.eye, 'ctrl'), parent=True)
+
+    @stage.parent_bones
+    def parent_master_bone(self):
+        self.set_bone_parent(self.bones.ctrl.master, self.parent_bone)
+
     ####################################################
     # def/org bones   
-    @stage.parent_bones
-    def parent_def_bones(self):
-        parent = self.parent_bone
-        self.set_bone_parent(self.bones.org.eye_lid_top, parent)
-        self.set_bone_parent(self.bones.org.eye_lid_bottom, parent)
+    @stage.generate_bones
+    def make_deform_bones(self):
+        org = self.bones.org
+        deform = self.bones.deform
+        deform.eye = self.copy_bone(org.eye, make_derived_name(org.eye, 'def'))
+        deform.eye_lid_top = self.copy_bone(org.eye_lid_top, make_derived_name(org.eye_lid_top, 'def'))
+        deform.eye_lid_bottom = self.copy_bone(org.eye_lid_bottom, make_derived_name(org.eye_lid_bottom, 'def'))
 
+    @stage.parent_bones
+    def parent_org_and_def_bones(self):
+        parent = self.parent_bone
+        master = self.bones.ctrl.master
         
-        self.clean_def_hierarchy(self.bones.org.eye_lid_top)
-        self.clean_def_hierarchy(self.bones.org.eye_lid_bottom)
-        self.clean_def_hierarchy(self.bones.org.eye)
+        # Parent DEF bones to the original parent bone hierarchy
+        self.set_bone_parent(self.bones.deform.eye, parent)
+        self.set_bone_parent(self.bones.deform.eye_lid_top, parent)
+        self.set_bone_parent(self.bones.deform.eye_lid_bottom, parent)
+        
+        # Parent ORG bones to the master controller of the eye
+        self.set_bone_parent(self.bones.org.eye, master)
+        self.set_bone_parent(self.bones.org.eye_lid_top, master)
+        self.set_bone_parent(self.bones.org.eye_lid_bottom, master)
+
+        # Clean hierarchies safely against the new deform bones
+        self.clean_def_hierarchy(self.bones.deform.eye)
+        self.clean_def_hierarchy(self.bones.deform.eye_lid_top)
+        self.clean_def_hierarchy(self.bones.deform.eye_lid_bottom)
+
+    @stage.rig_bones
+    def rig_deform_bones(self):
+        # Tie DEF transforms securely to ORG bones
+        self.make_constraint(self.bones.deform.eye, 'COPY_TRANSFORMS', self.bones.org.eye)
+        self.make_constraint(self.bones.deform.eye_lid_top, 'COPY_TRANSFORMS', self.bones.org.eye_lid_top)
+        self.make_constraint(self.bones.deform.eye_lid_bottom, 'COPY_TRANSFORMS', self.bones.org.eye_lid_bottom)
 
     ####################################################
     # eye_lid bones 
@@ -111,24 +153,27 @@ class Rig(BaseRig):
         new_position = pbone2.tail
         put_bone(self.obj, bone2, new_position)
 
-        #move out and orient lid controllers in the direction
+        # Move out and orient lid controllers in the direction
         vec = (pbone.tail - pbone.head).normalized()
-        vec[2] = 0 #exclude z from direction
+        vec[2] = 0 # exclude z from direction
         axis_idx, axis_val = max(enumerate(vec), key=lambda i: abs(i[1]))
         move_offset = Vector((0, 0, 0))
         sign = 1 if axis_val >= 0 else -1
         move_offset[axis_idx] = length * sign
 
-        #orient bones stright
+        # Orient bones straight
         for bone in [pbone, pbone2]:
             bone.head += move_offset
-            bone.tail = bone.head +  move_offset
+            bone.tail = bone.head + move_offset
             align_bone_roll(self.obj, bone.name, self.bones.org.eye_lid_top)
+            
     @stage.parent_bones
     def parent_lid_bones(self):
         bones = self.bones.ctrl
+        # Parent lid controllers to the eye's master controller
         for bone in [bones.eye_lid_top, bones.eye_lid_bottom]:
-            self.set_bone_parent(bone, self.parent_bone)
+            self.set_bone_parent(bone, bones.master)
+            
     @stage.rig_bones
     def rig_lid_bones(self):
         ctrl = self.bones.ctrl
@@ -138,24 +183,25 @@ class Rig(BaseRig):
             [self.bones.org.eye_lid_top, self.bones.org.eye_lid_bottom]
         )
 
-        angleMin = calculate_alignment_rotation(self.obj, self.get_bone(self.bones.org.eye_lid_top), self.get_bone(self.bones.org.eye_lid_bottom))[0] #isolate X rotation value
+        angleMin = calculate_alignment_rotation(self.obj, self.get_bone(self.bones.org.eye_lid_top), self.get_bone(self.bones.org.eye_lid_bottom))[0] # isolate X rotation value
         angleMin = degrees(angleMin)
         angleMax = self.params.angleMax
         targetMin = self.params.targetMin
-        targetMax = (targetMin * angleMax)/(angleMin) #find max value using linear relationship Ratio Rule
+        targetMax = (targetMin * angleMax)/(angleMin) # find max value using linear relationship Ratio Rule
 
         for i, (controller, owner_bone_name) in enumerate(bone_pairs):
             self.make_constraint(
                 owner_bone_name, 
                 'COPY_ROTATION', 
                 self.bones.org.eye, 
-                use_x=True, use_y=False, use_z=False,  # explicit axis locking
+                use_x=True, use_y=False, use_z=False,
                 owner_space='LOCAL', target_space='LOCAL'
             )
-            min =-abs(targetMin) if i==0 else -abs(targetMax)
+            min = -abs(targetMin) if i==0 else -abs(targetMax)
             max = abs(targetMax) if i==0 else abs(targetMin)
             to_min_x_rot = -abs(radians(angleMin)) if i==0 else -abs(radians(angleMax))
             to_max_x_rot = abs(radians(angleMax)) if i==0 else abs(radians(angleMin))
+            
             self.make_constraint(
                 owner_bone_name, 
                 'TRANSFORM', 
@@ -164,8 +210,8 @@ class Rig(BaseRig):
                 map_from='LOCATION', map_to='ROTATION',
                 map_to_x_from='Z',
                 map_to_z_from='X',
-                from_min_z=min, from_max_z=max,  # Input range
-                to_min_x_rot=to_min_x_rot, to_max_x_rot=to_max_x_rot # Output range
+                from_min_z=min, from_max_z=max,
+                to_min_x_rot=to_min_x_rot, to_max_x_rot=to_max_x_rot
             )
             self.make_constraint(
                 owner_bone_name, 
@@ -173,17 +219,18 @@ class Rig(BaseRig):
                 controller,
                 owner_space='LOCAL',
                 target_space='LOCAL',
-                use_x=False, use_y=True, use_z=False,  # explicit axis locking
+                use_x=False, use_y=True, use_z=False,
             )
             con = self.make_constraint(
                 owner_bone_name, 
                 'LIMIT_ROTATION', 
                 owner_space='LOCAL',
-                use_limit_x=True, min_x=to_min_x_rot, max_x=to_max_x_rot, # Lock Y
+                use_limit_x=True, min_x=to_min_x_rot, max_x=to_max_x_rot,
             )
             if con and con.use_legacy_behavior:
-                con.use_legacy_behavior=False
-            #rig Target Bones
+                con.use_legacy_behavior = False
+                
+            # rig Target Bones
             self.make_constraint(
                 controller, 
                 'LIMIT_LOCATION', 
@@ -201,7 +248,7 @@ class Rig(BaseRig):
             pbone.lock_scale = [True]*3
 
     def generate_widgets(self):
-        bones = self.bones.ctrl.eye_lid_top, self.bones.ctrl.eye_lid_bottom, self.bones.ctrl.target
+        bones = self.bones.ctrl.eye_lid_top, self.bones.ctrl.eye_lid_bottom, self.bones.ctrl.target, self.bones.ctrl.master
         for bone in bones:
             create_registered_widget(self.obj, bone, 'circle')
     
@@ -213,34 +260,30 @@ class Rig(BaseRig):
             description='Angle for maximum eyelid Opening'
         )
         params.targetMin = bpy.props.FloatProperty(
-            name='angleMax',
+            name='targetMin',
             default=-0.04,
-            description='Location for minimul eyelid control Opening'
+            description='Location for minimum eyelid control Opening'
         )
     
     @classmethod
     def parameters_ui(cls, layout, params):
-        r=layout.row()
+        r = layout.row()
         r.prop(params, 'angleMax')
         r.prop(params, 'targetMin')
 
-
-    
-
-    
 ####################################################
 # Cluster rig
 class EyeClusterControl(GeneratorPlugin, BaseRigMixin):
     rig_list: list[Rig] = []
     master_bone: str
 
-
     def __init__(self, generator: BaseGenerator):
         super().__init__(generator)
 
-    def register_rig(self,  rig: Rig):
+    def register_rig(self, rig: Rig):
         if isinstance(rig, Rig):
             self.rig_list.append(rig)
+            
     ####################################################
     # master bone
     @stage.generate_bones
@@ -252,10 +295,11 @@ class EyeClusterControl(GeneratorPlugin, BaseRigMixin):
                     new_position += self.get_bone(rig.bones.ctrl.target).head
                 except AttributeError:
                     self.raise_error("'{}' does not have target name specified for eyes make_master_bone position!", rig.bones.ctrl)
-            new_position /= len(self.rig_list) #get avarage position for master control
+            new_position /= len(self.rig_list) # get average position for master control
             target_bone_name = self.rig_list[0].bones.ctrl.target
             self.master_bone = master_bone_name = self.copy_bone(target_bone_name, make_derived_name(change_name_side(target_bone_name, side=Side.MIDDLE), 'ctrl'), parent=True)
             put_bone(self.obj, master_bone_name, new_position)
+            
     @stage.parent_bones
     def parent_target_bones_to_master(self):
         for rig in self.rig_list:
@@ -264,10 +308,8 @@ class EyeClusterControl(GeneratorPlugin, BaseRigMixin):
     def generate_widgets(self):
         create_registered_widget(self.obj, self.master_bone, 'diamond')
 
-
-
-def create_sample(obj):  # noqa
-    # generated by rigify.utils.write_metarig
+def create_sample(obj):
+    # (unchanged sample code below...)
     bpy.ops.object.mode_set(mode='EDIT')
     arm = obj.data
 

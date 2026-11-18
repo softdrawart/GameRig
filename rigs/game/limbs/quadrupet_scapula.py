@@ -4,7 +4,7 @@
 
 import bpy
 
-from rigify.base_rig import BaseRig
+from ....base_rig import BaseRig
 
 from rigify.utils.naming import make_derived_name
 from rigify.utils.widgets import layout_widget_dropdown, create_registered_widget
@@ -71,7 +71,11 @@ class Rig(BaseRig):
     def rig_bones(self):
         bones = self.bones
         # DEF
-        self.make_constraint(bones.deform, 'COPY_TRANSFORMS', bones.org)
+        if self.params.enable_scale:
+            self.make_constraint(bones.deform, 'COPY_TRANSFORMS', bones.org)
+        else:
+            self.make_constraint(bones.deform, 'COPY_LOCATION', bones.org)
+            self.make_constraint(bones.deform, 'COPY_ROTATION', bones.org)
         # MCH
         self.make_constraint(bones.mch.direction, 'COPY_LOCATION', bones.ctrl.ik)
         self.make_constraint(bones.mch.direction, 'DAMPED_TRACK', bones.ctrl.target)
@@ -89,9 +93,12 @@ class Rig(BaseRig):
 
     @classmethod
     def add_parameters(cls, params):
-        pass
-
+        params.enable_scale = bpy.props.BoolProperty(
+            name="Scale",
+            default=True,
+            description="Deformation bones will inherit the scale of their ORG bones. Enable this only if you know what you are doing because scale can break your rig in the game engine"
+        )
     @classmethod
     def parameters_ui(cls, layout, params):
-        pass
+        layout.prop(params, "enable_scale")
 
